@@ -6,12 +6,13 @@
 #
 # Written by David A. Ham (david.ham@imperial.ac.uk), 2015
 
-from FIAT import finite_element, dual_set, functional, quadrature
+from FIAT import functional, quadrature
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import ONPolynomialSet
 from FIAT.reference_element import LINE
 
 
-class GaussLegendreDualSet(dual_set.DualSet):
+class GaussLegendreDualSet(DualSet):
     """The dual basis for 1D discontinuous elements with nodes at the
     Gauss-Legendre points."""
     def __init__(self, ref_el, degree):
@@ -20,10 +21,10 @@ class GaussLegendreDualSet(dual_set.DualSet):
         lr = quadrature.GaussLegendreQuadratureLineRule(ref_el, degree+1)
         nodes = [functional.PointEvaluation(ref_el, x) for x in lr.pts]
 
-        super(GaussLegendreDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class GaussLegendre(finite_element.CiarletElement):
+class GaussLegendre(CiarletElement):
     """1D discontinuous element with nodes at the Gauss-Legendre points."""
     def __init__(self, ref_el, degree):
         if ref_el.shape != LINE:
@@ -31,4 +32,4 @@ class GaussLegendre(finite_element.CiarletElement):
         poly_set = ONPolynomialSet(ref_el, degree)
         dual = GaussLegendreDualSet(ref_el, degree)
         formdegree = ref_el.get_spatial_dimension()  # n-form
-        super(GaussLegendre, self).__init__(poly_set, dual, degree, formdegree)
+        super().__init__(poly_set, dual, degree, formdegree)

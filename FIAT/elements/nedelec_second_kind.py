@@ -7,8 +7,7 @@
 
 import numpy as np
 
-from FIAT.finite_element import CiarletElement
-from FIAT.dual_set import DualSet
+from FIAT.finite_element import CiarletElement, DualSet
 from FIAT.polynomials import ONPolynomialSet
 from FIAT.functional import PointEdgeTangentEvaluation as Tangent
 from FIAT.functional import FrobeniusIntegralMoment as IntegralMoment
@@ -52,7 +51,7 @@ class NedelecSecondKindDual(DualSet):
         (dofs, ids) = self.generate_degrees_of_freedom(cell, degree)
 
         # Call init of super-class
-        super(NedelecSecondKindDual, self).__init__(dofs, cell, ids)
+        super().__init__(dofs, cell, ids)
 
     def generate_degrees_of_freedom(self, cell, degree):
         "Generate dofs and geometry-to-dof maps (ids)."
@@ -226,4 +225,4 @@ class NedelecSecondKind(CiarletElement):
         mapping = "covariant piola"
 
         # Call init of super-class
-        super(NedelecSecondKind, self).__init__(Ps, Ls, degree, formdegree, mapping=mapping)
+        super().__init__(Ps, Ls, degree, formdegree, mapping=mapping)

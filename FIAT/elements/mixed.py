@@ -10,9 +10,7 @@ import numpy as np
 
 from operator import add
 from functools import partial
-
-from FIAT.dual_set import DualSet
-from FIAT.finite_element import FiniteElement
+from FIAT.finite_element import DualSet, FiniteElement
 
 
 class MixedElement(FiniteElement):
@@ -40,7 +38,7 @@ class MixedElement(FiniteElement):
         entity_dofs = concatenate_entity_dofs(ref_el, elements)
 
         dual = DualSet(nodes, ref_el, entity_dofs)
-        super(MixedElement, self).__init__(ref_el, dual, None, mapping=None)
+        super().__init__(ref_el, dual, None, mapping=None)
         self._elements = elements
 
     def elements(self):

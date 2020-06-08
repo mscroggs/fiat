@@ -5,7 +5,8 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import quadrature, dual_set, finite_element, functional
+from FIAT import quadrature, functional
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import (ONPolynomialSet, PolynomialSet,
                               polynomial_set_union_normalized,
                               expansions)
@@ -137,7 +138,7 @@ def NedelecSpace3D(ref_el, k):
     return polynomial_set_union_normalized(vec_Pk, PkCrossX)
 
 
-class NedelecDual2D(dual_set.DualSet):
+class NedelecDual2D(DualSet):
     """Dual basis for first-kind Nedelec in 2D."""
 
     def __init__(self, ref_el, degree):
@@ -195,10 +196,10 @@ class NedelecDual2D(dual_set.DualSet):
             num_internal_dof = sd * Pkm1_at_qpts.shape[0]
             entity_ids[2][0] = list(range(cur, cur + num_internal_dof))
 
-        super(NedelecDual2D, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class NedelecDual3D(dual_set.DualSet):
+class NedelecDual3D(DualSet):
     """Dual basis for first-kind Nedelec in 3D."""
 
     def __init__(self, ref_el, degree):
@@ -270,10 +271,10 @@ class NedelecDual3D(dual_set.DualSet):
             num_internal_dof = Pkm2_at_qpts.shape[0] * sd
             entity_ids[3][0] = list(range(cur, cur + num_internal_dof))
 
-        super(NedelecDual3D, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class Nedelec(finite_element.CiarletElement):
+class Nedelec(CiarletElement):
     """Nedelec finite element"""
 
     def __init__(self, ref_el, q):
@@ -289,5 +290,5 @@ class Nedelec(finite_element.CiarletElement):
         else:
             raise Exception("Not implemented")
         formdegree = 1  # 1-form
-        super(Nedelec, self).__init__(poly_set, dual, degree, formdegree,
-                                      mapping="covariant piola")
+        super().__init__(poly_set, dual, degree, formdegree,
+                         mapping="covariant piola")

@@ -7,12 +7,13 @@
 # Written by Robert C. Kirby (robert_kirby@baylor.edu), 2020
 
 
-from FIAT import finite_element, dual_set, functional, quadrature
+from FIAT import functional, quadrature
+from FIAT.finite_element import CiarletElement, DualSet
 from FIAT.polynomials import ONPolynomialSet
 from FIAT.reference_element import LINE
 
 
-class GaussRadauDualSet(dual_set.DualSet):
+class GaussRadauDualSet(DualSet):
     """The dual basis for 1D discontinuous elements with nodes at the
     Gauss-Radau points."""
     def __init__(self, ref_el, degree, right=True):
@@ -23,10 +24,10 @@ class GaussRadauDualSet(dual_set.DualSet):
         lr = quadrature.RadauQuadratureLineRule(ref_el, degree+1, right)
         nodes = [functional.PointEvaluation(ref_el, x) for x in lr.pts]
 
-        super(GaussRadauDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class GaussRadau(finite_element.CiarletElement):
+class GaussRadau(CiarletElement):
     """1D discontinuous element with nodes at the Gauss-Radau points."""
     def __init__(self, ref_el, degree):
         if ref_el.shape != LINE:
@@ -34,4 +35,4 @@ class GaussRadau(finite_element.CiarletElement):
         poly_set = ONPolynomialSet(ref_el, degree)
         dual = GaussRadauDualSet(ref_el, degree)
         formdegree = ref_el.get_spatial_dimension()  # n-form
-        super(GaussRadau, self).__init__(poly_set, dual, degree, formdegree)
+        super().__init__(poly_set, dual, degree, formdegree)

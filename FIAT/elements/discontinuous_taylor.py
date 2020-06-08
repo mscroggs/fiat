@@ -6,14 +6,15 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, dual_set, functional, quadrature
+from FIAT import functional, quadrature
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import ONPolynomialSet
 from .p0 import P0
 from FIAT.helpers import mis
 import numpy as np
 
 
-class DiscontinuousTaylorDualSet(dual_set.DualSet):
+class DiscontinuousTaylorDualSet(DualSet):
     """The dual basis for Taylor elements.  This class works for
     intervals.  Nodes are function and derivative evaluation
     at the midpoint."""
@@ -38,17 +39,17 @@ class DiscontinuousTaylorDualSet(dual_set.DualSet):
                       for d in range(dim + 1)}
         entity_ids[dim][0] = list(range(len(nodes)))
 
-        super(DiscontinuousTaylorDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class HigherOrderDiscontinuousTaylor(finite_element.CiarletElement):
+class HigherOrderDiscontinuousTaylor(CiarletElement):
     """The discontinuous Taylor finite element. Use a Taylor basis for DG."""
 
     def __init__(self, ref_el, degree):
         poly_set = ONPolynomialSet(ref_el, degree)
         dual = DiscontinuousTaylorDualSet(ref_el, degree)
         formdegree = ref_el.get_spatial_dimension()  # n-form
-        super(HigherOrderDiscontinuousTaylor, self).__init__(poly_set, dual, degree, formdegree)
+        super().__init__(poly_set, dual, degree, formdegree)
 
 
 def DiscontinuousTaylor(ref_el, degree):

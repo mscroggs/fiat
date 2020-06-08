@@ -5,11 +5,12 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, dual_set, functional
+from FIAT import functional
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import ONPolynomialSet
 
 
-class CubicHermiteDualSet(dual_set.DualSet):
+class CubicHermiteDualSet(DualSet):
     """The dual basis for Lagrange elements.  This class works for
     simplices of any dimension.  Nodes are point evaluation at
     equispaced points."""
@@ -65,13 +66,13 @@ class CubicHermiteDualSet(dual_set.DualSet):
                 for facet in top[dim]:
                     entity_ids[dim][facet] = []
 
-        super(CubicHermiteDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class CubicHermite(finite_element.CiarletElement):
+class CubicHermite(CiarletElement):
     """The cubic Hermite finite element.  It is what it is."""
 
     def __init__(self, ref_el):
         poly_set = ONPolynomialSet(ref_el, 3)
         dual = CubicHermiteDualSet(ref_el)
-        super(CubicHermite, self).__init__(poly_set, dual, 3)
+        super().__init__(poly_set, dual, 3)

@@ -4,12 +4,13 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, dual_set, functional
+from FIAT import functional
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import ONPolynomialSet
 from FIAT.reference_element import TRIANGLE
 
 
-class ArgyrisDualSet(dual_set.DualSet):
+class ArgyrisDualSet(DualSet):
     def __init__(self, ref_el, degree):
         entity_ids = {}
         nodes = []
@@ -75,10 +76,10 @@ class ArgyrisDualSet(dual_set.DualSet):
         else:
             entity_ids[2] = {0: []}
 
-        super(ArgyrisDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class QuinticArgyrisDualSet(dual_set.DualSet):
+class QuinticArgyrisDualSet(DualSet):
     def __init__(self, ref_el):
         entity_ids = {}
         nodes = []
@@ -125,22 +126,22 @@ class QuinticArgyrisDualSet(dual_set.DualSet):
 
         entity_ids[2] = {0: []}
 
-        super(QuinticArgyrisDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class Argyris(finite_element.CiarletElement):
+class Argyris(CiarletElement):
     """The Argyris finite element."""
 
     def __init__(self, ref_el, degree):
         poly_set = ONPolynomialSet(ref_el, degree)
         dual = ArgyrisDualSet(ref_el, degree)
-        super(Argyris, self).__init__(poly_set, dual, degree)
+        super().__init__(poly_set, dual, degree)
 
 
-class QuinticArgyris(finite_element.CiarletElement):
+class QuinticArgyris(CiarletElement):
     """The Argyris finite element."""
 
     def __init__(self, ref_el):
         poly_set = ONPolynomialSet(ref_el, 5)
         dual = QuinticArgyrisDualSet(ref_el)
-        super(QuinticArgyris, self).__init__(poly_set, dual, 5)
+        super().__init__(poly_set, dual, 5)

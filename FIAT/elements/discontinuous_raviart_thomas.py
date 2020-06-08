@@ -6,11 +6,12 @@
 #
 # Modified by Jan Blechta 2014
 
-from FIAT import dual_set, finite_element, functional
+from FIAT import functional
+from FIAT.finite_element import DualSet, CiarletElement
 from .raviart_thomas import RTSpace
 
 
-class DRTDualSet(dual_set.DualSet):
+class DRTDualSet(DualSet):
     """Dual basis for Raviart-Thomas elements consisting of point
     evaluation of normals on facets of codimension 1 and internal
     moments against polynomials. This is the discontinuous version
@@ -54,10 +55,10 @@ class DRTDualSet(dual_set.DualSet):
         # cell dofs
         entity_ids[sd] = {0: list(range(len(nodes)))}
 
-        super(DRTDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class DiscontinuousRaviartThomas(finite_element.CiarletElement):
+class DiscontinuousRaviartThomas(CiarletElement):
     """The discontinuous Raviart-Thomas finite element"""
 
     def __init__(self, ref_el, q):
@@ -65,5 +66,4 @@ class DiscontinuousRaviartThomas(finite_element.CiarletElement):
         degree = q - 1
         poly_set = RTSpace(ref_el, degree)
         dual = DRTDualSet(ref_el, degree)
-        super(DiscontinuousRaviartThomas, self).__init__(poly_set, dual, degree,
-                                                         mapping="contravariant piola")
+        super().__init__(poly_set, dual, degree, mapping="contravariant piola")

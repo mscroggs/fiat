@@ -7,8 +7,7 @@
 import numpy as np
 
 from FIAT.polynomials import PolynomialSet
-from FIAT.dual_set import DualSet
-from FIAT.finite_element import CiarletElement
+from FIAT.finite_element import CiarletElement, DualSet
 
 __all__ = ['NodalEnrichedElement']
 
@@ -76,8 +75,8 @@ class NodalEnrichedElement(CiarletElement):
 
         # CiarletElement constructor adjusts poly_set coefficients s.t.
         # dual_set is really dual to poly_set
-        super(NodalEnrichedElement, self).__init__(poly_set, dual_set, order,
-                                                   formdegree=formdegree, mapping=mapping)
+        super().__init__(poly_set, dual_set, order,
+                         formdegree=formdegree, mapping=mapping)
 
 
 def _merge_coeffs(coeffss):

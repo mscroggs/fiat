@@ -5,12 +5,13 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, dual_set, functional
+from FIAT import functional
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import ONPolynomialSet
 from .p0 import P0
 
 
-class DiscontinuousLagrangeDualSet(dual_set.DualSet):
+class DiscontinuousLagrangeDualSet(DualSet):
     """The dual basis for Lagrange elements.  This class works for
     simplices of any dimension.  Nodes are point evaluation at
     equispaced points.  This is the discontinuous version where
@@ -38,17 +39,17 @@ class DiscontinuousLagrangeDualSet(dual_set.DualSet):
 
         entity_ids[dim][0] = list(range(len(nodes)))
 
-        super(DiscontinuousLagrangeDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class HigherOrderDiscontinuousLagrange(finite_element.CiarletElement):
+class HigherOrderDiscontinuousLagrange(CiarletElement):
     """The discontinuous Lagrange finite element.  It is what it is."""
 
     def __init__(self, ref_el, degree):
         poly_set = ONPolynomialSet(ref_el, degree)
         dual = DiscontinuousLagrangeDualSet(ref_el, degree)
         formdegree = ref_el.get_spatial_dimension()  # n-form
-        super(HigherOrderDiscontinuousLagrange, self).__init__(poly_set, dual, degree, formdegree)
+        super().__init__(poly_set, dual, degree, formdegree)
 
 
 def DiscontinuousLagrange(ref_el, degree):

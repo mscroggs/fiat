@@ -4,8 +4,7 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT.finite_element import CiarletElement
-from FIAT.dual_set import DualSet
+from FIAT.finite_element import CiarletElement, DualSet
 
 
 class DiscontinuousElement(CiarletElement):

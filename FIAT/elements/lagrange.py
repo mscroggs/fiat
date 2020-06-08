@@ -5,11 +5,12 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, dual_set, functional
+from FIAT import functional
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import ONPolynomialSet
 
 
-class LagrangeDualSet(dual_set.DualSet):
+class LagrangeDualSet(DualSet):
     """The dual basis for Lagrange elements.  This class works for
     simplices of any dimension.  Nodes are point evaluation at
     equispaced points."""
@@ -34,14 +35,14 @@ class LagrangeDualSet(dual_set.DualSet):
                 entity_ids[dim][entity] = list(range(cur, cur + nnodes_cur))
                 cur += nnodes_cur
 
-        super(LagrangeDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class Lagrange(finite_element.CiarletElement):
+class Lagrange(CiarletElement):
     """The Lagrange finite element.  It is what it is."""
 
     def __init__(self, ref_el, degree):
         poly_set = ONPolynomialSet(ref_el, degree)
         dual = LagrangeDualSet(ref_el, degree)
         formdegree = 0  # 0-form
-        super(Lagrange, self).__init__(poly_set, dual, degree, formdegree)
+        super().__init__(poly_set, dual, degree, formdegree)

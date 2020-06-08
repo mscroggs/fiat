@@ -7,8 +7,7 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT.finite_element import CiarletElement
-from FIAT.dual_set import DualSet
+from FIAT.finite_element import CiarletElement, DualSet
 from FIAT.polynomials import ONSymTensorPolynomialSet
 from FIAT.functional import PointwiseInnerProductEvaluation as InnerProduct
 import numpy as np
@@ -39,7 +38,7 @@ class HellanHerrmannJohnsonDual(DualSet):
         dofs.extend(_dofs)
         dof_ids[dim] = _dof_ids
 
-        super(HellanHerrmannJohnsonDual, self).__init__(dofs, cell, dof_ids)
+        super().__init__(dofs, cell, dof_ids)
 
     @staticmethod
     def _generate_edge_dofs(cell, degree, offset):
@@ -93,5 +92,4 @@ class HellanHerrmannJohnson(CiarletElement):
         # mapping under affine transformation
         mapping = "double contravariant piola"
 
-        super(HellanHerrmannJohnson, self).__init__(Ps, Ls, degree,
-                                                    mapping=mapping)
+        super().__init__(Ps, Ls, degree, mapping=mapping)

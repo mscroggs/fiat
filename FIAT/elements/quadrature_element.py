@@ -11,8 +11,7 @@
 
 import numpy
 
-from FIAT.dual_set import DualSet
-from FIAT.finite_element import FiniteElement
+from FIAT.finite_element import FiniteElement, DualSet
 from FIAT.functional import PointEvaluation
 
 
@@ -32,7 +31,7 @@ class QuadratureElement(FiniteElement):
         # Construct the dual set
         dual = DualSet(nodes, ref_el, entity_dofs)
 
-        super(QuadratureElement, self).__init__(ref_el, dual, order=None)
+        super().__init__(ref_el, dual, order=None)
         self._points = points  # save the quadrature points & weights
         self._weights = weights
 

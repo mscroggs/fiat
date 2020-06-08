@@ -10,7 +10,8 @@
 # Last changed: 2010-01-28
 
 from FIAT.polynomials import ONPolynomialSet
-from FIAT import finite_element, dual_set, functional
+from FIAT import functional
+from FIAT.finite_element import DualSet, CiarletElement
 
 
 def _initialize_entity_ids(topology):
@@ -22,7 +23,7 @@ def _initialize_entity_ids(topology):
     return entity_ids
 
 
-class CrouzeixRaviartDualSet(dual_set.DualSet):
+class CrouzeixRaviartDualSet(DualSet):
     """Dual basis for Crouzeix-Raviart element (linears continuous at
     boundary midpoints)."""
 
@@ -47,10 +48,10 @@ class CrouzeixRaviartDualSet(dual_set.DualSet):
             entity_ids[d - 1][i] += [i]
 
         # Initialize super-class
-        super(CrouzeixRaviartDualSet, self).__init__(nodes, cell, entity_ids)
+        super().__init__(nodes, cell, entity_ids)
 
 
-class CrouzeixRaviart(finite_element.CiarletElement):
+class CrouzeixRaviart(CiarletElement):
     """The Crouzeix-Raviart finite element:
 
     K:                 Triangle/Tetrahedron
@@ -68,4 +69,4 @@ class CrouzeixRaviart(finite_element.CiarletElement):
         # FiniteElement
         space = ONPolynomialSet(cell, 1)
         dual = CrouzeixRaviartDualSet(cell, 1)
-        super(CrouzeixRaviart, self).__init__(space, dual, 1)
+        super().__init__(space, dual, 1)

@@ -7,11 +7,11 @@
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
 import numpy as np
-from FIAT.finite_element import FiniteElement
-from FIAT.reference_element import TensorProductCell, UFCQuadrilateral, UFCHexahedron, flatten_entities, compute_unflattening_map
-from FIAT.dual_set import DualSet
+from FIAT.finite_element import FiniteElement, DualSet
+from FIAT.reference_element import (
+    TensorProductCell, UFCQuadrilateral, UFCHexahedron, flatten_entities,
+    compute_unflattening_map)
 from FIAT.helpers import mis
-from FIAT import dual_set
 from FIAT import functional
 
 
@@ -204,9 +204,9 @@ class TensorProductElement(FiniteElement):
             else:
                 raise NotImplementedError("unsupported functional type")
 
-        dual = dual_set.DualSet(nodes, ref_el, entity_ids)
+        dual = DualSet(nodes, ref_el, entity_ids)
 
-        super(TensorProductElement, self).__init__(ref_el, dual, order, formdegree, mapping)
+        super().__init__(ref_el, dual, order, formdegree, mapping)
         # Set up constituent elements
         self.A = A
         self.B = B
@@ -383,7 +383,8 @@ class FlattenedDimensions(FiniteElement):
 
         flat_entity_ids = flatten_entities(entity_ids)
         dual = DualSet(nodes, ref_el, flat_entity_ids)
-        super(FlattenedDimensions, self).__init__(ref_el, dual, element.get_order(), element.get_formdegree(), element._mapping)
+        super().__init__(ref_el, dual, element.get_order(),
+                         element.get_formdegree(), element._mapping)
         self.element = element
 
         # Construct unflattening map for passing correct values to tabulate()

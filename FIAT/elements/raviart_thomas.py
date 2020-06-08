@@ -5,7 +5,8 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import quadrature, dual_set, finite_element, functional
+from FIAT import quadrature, functional
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import (ONPolynomialSet, PolynomialSet,
                               polynomial_set_union_normalized,
                               expansions)
@@ -59,7 +60,7 @@ def RTSpace(ref_el, deg):
     return polynomial_set_union_normalized(vec_Pk_from_Pkp1, PkHx)
 
 
-class RTDualSet(dual_set.DualSet):
+class RTDualSet(DualSet):
     """Dual basis for Raviart-Thomas elements consisting of point
     evaluation of normals on facets of codimension 1 and internal
     moments against polynomials"""
@@ -123,10 +124,10 @@ class RTDualSet(dual_set.DualSet):
                                                                  degree - 1)
             entity_ids[sd][0] = list(range(cur, cur + num_internal_nodes * sd))
 
-        super(RTDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class RaviartThomas(finite_element.CiarletElement):
+class RaviartThomas(CiarletElement):
     """The Raviart-Thomas finite element"""
 
     def __init__(self, ref_el, q):
@@ -135,5 +136,5 @@ class RaviartThomas(finite_element.CiarletElement):
         poly_set = RTSpace(ref_el, degree)
         dual = RTDualSet(ref_el, degree)
         formdegree = ref_el.get_spatial_dimension() - 1  # (n-1)-form
-        super(RaviartThomas, self).__init__(poly_set, dual, degree, formdegree,
-                                            mapping="contravariant piola")
+        super().__init__(poly_set, dual, degree, formdegree,
+                         mapping="contravariant piola")

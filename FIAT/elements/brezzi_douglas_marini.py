@@ -5,12 +5,13 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, quadrature, functional, dual_set
+from FIAT.finite_element import DualSet, CiarletElement
+from FIAT import quadrature, functional
 from FIAT.polynomials import ONPolynomialSet
 from . import nedelec
 
 
-class BDMDualSet(dual_set.DualSet):
+class BDMDualSet(DualSet):
     def __init__(self, ref_el, degree):
 
         # Initialize containers for map: mesh_entity -> dof number and
@@ -68,10 +69,10 @@ class BDMDualSet(dual_set.DualSet):
             num_internal_nodes = len(Ned_at_qpts)
             entity_ids[sd][0] = list(range(cur, cur + num_internal_nodes))
 
-        super(BDMDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class BrezziDouglasMarini(finite_element.CiarletElement):
+class BrezziDouglasMarini(CiarletElement):
     """The BDM element"""
 
     def __init__(self, ref_el, degree):
@@ -83,5 +84,5 @@ class BrezziDouglasMarini(finite_element.CiarletElement):
         poly_set = ONPolynomialSet(ref_el, degree, (sd, ))
         dual = BDMDualSet(ref_el, degree)
         formdegree = sd - 1  # (n-1)-form
-        super(BrezziDouglasMarini, self).__init__(poly_set, dual, degree, formdegree,
-                                                  mapping="contravariant piola")
+        super().__init__(poly_set, dual, degree, formdegree,
+                         mapping="contravariant piola")

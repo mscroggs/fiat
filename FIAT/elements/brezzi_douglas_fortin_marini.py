@@ -1,4 +1,5 @@
-from FIAT import finite_element, functional, dual_set
+from FIAT.finite_element import DualSet, CiarletElement
+from FIAT import functional
 from FIAT.polynomials import (ONPolynomialSet, PolynomialSet,
                               polynomial_set_union_normalized)
 from . import lagrange
@@ -6,7 +7,7 @@ from . import lagrange
 import numpy as np
 
 
-class BDFMDualSet(dual_set.DualSet):
+class BDFMDualSet(DualSet):
     def __init__(self, ref_el, degree):
 
         # Initialize containers for map: mesh_entity -> dof number and
@@ -60,7 +61,7 @@ class BDFMDualSet(dual_set.DualSet):
         entity_ids[sd] = {0: list(range(cur, cur + tangent_count))}
         cur += tangent_count
 
-        super(BDFMDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
 def BDFMSpace(ref_el, order):
@@ -101,7 +102,7 @@ def BDFMSpace(ref_el, order):
     return element_set
 
 
-class BrezziDouglasFortinMarini(finite_element.CiarletElement):
+class BrezziDouglasFortinMarini(CiarletElement):
     """The BDFM element"""
 
     def __init__(self, ref_el, degree):
@@ -112,5 +113,5 @@ class BrezziDouglasFortinMarini(finite_element.CiarletElement):
         poly_set = BDFMSpace(ref_el, degree)
         dual = BDFMDualSet(ref_el, degree - 1)
         formdegree = ref_el.get_spatial_dimension() - 1
-        super(BrezziDouglasFortinMarini, self).__init__(poly_set, dual, degree, formdegree,
-                                                        mapping="contravariant piola")
+        super().__init__(poly_set, dual, degree, formdegree,
+                         mapping="contravariant piola")

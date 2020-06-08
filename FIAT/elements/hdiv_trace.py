@@ -6,8 +6,7 @@
 
 import numpy as np
 from .discontinuous_lagrange import DiscontinuousLagrange
-from FIAT.dual_set import DualSet
-from FIAT.finite_element import FiniteElement
+from FIAT.finite_element import FiniteElement, DualSet
 from FIAT.functional import PointEvaluation
 from FIAT.helpers import mis
 from FIAT.reference_element import (ufc_simplex, POINT,
@@ -25,7 +24,7 @@ class TraceError(Exception):
     or the gradient of a trace element."""
 
     def __init__(self, msg):
-        super(TraceError, self).__init__(msg)
+        super().__init__(msg)
         self.msg = msg
 
 
@@ -114,9 +113,8 @@ class HDivTrace(FiniteElement):
         # Degree of the element
         deg = max([e.degree() for e in dg_elements.values()])
 
-        super(HDivTrace, self).__init__(ref_el, dual, order=deg,
-                                        formdegree=facet_sd,
-                                        mapping="affine")
+        super().__init__(ref_el, dual, order=deg,
+                         formdegree=facet_sd, mapping="affine")
 
         # Set up facet elements
         self.dg_elements = dg_elements

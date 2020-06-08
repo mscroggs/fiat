@@ -4,12 +4,13 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, dual_set, functional
+from FIAT import functional
+from FIAT.finite_element import CiarletElement, DualSet
 from FIAT.polynomials import ONPolynomialSet
 from FIAT.reference_element import TRIANGLE
 
 
-class MorleyDualSet(dual_set.DualSet):
+class MorleyDualSet(DualSet):
     """The dual basis for Lagrange elements.  This class works for
     simplices of any dimension.  Nodes are point evaluation at
     equispaced points."""
@@ -46,13 +47,13 @@ class MorleyDualSet(dual_set.DualSet):
 
         entity_ids[2] = {0: []}
 
-        super(MorleyDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class Morley(finite_element.CiarletElement):
+class Morley(CiarletElement):
     """The Morley finite element."""
 
     def __init__(self, ref_el):
         poly_set = ONPolynomialSet(ref_el, 2)
         dual = MorleyDualSet(ref_el)
-        super(Morley, self).__init__(poly_set, dual, 2)
+        super().__init__(poly_set, dual, 2)

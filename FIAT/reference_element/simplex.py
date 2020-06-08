@@ -271,7 +271,7 @@ class Point(Simplex):
     def __init__(self):
         verts = ((),)
         topology = {0: {0: (0,)}}
-        super(Point, self).__init__(POINT, verts, topology)
+        super().__init__(POINT, verts, topology)
 
 
 class DefaultLine(Simplex):
@@ -282,7 +282,7 @@ class DefaultLine(Simplex):
         edges = {0: (0, 1)}
         topology = {0: {0: (0,), 1: (1,)},
                     1: edges}
-        super(DefaultLine, self).__init__(LINE, verts, topology)
+        super().__init__(LINE, verts, topology)
 
     def get_facet_element(self):
         raise NotImplementedError()
@@ -296,7 +296,7 @@ class UFCInterval(UFCSimplex):
         edges = {0: (0, 1)}
         topology = {0: {0: (0,), 1: (1,)},
                     1: edges}
-        super(UFCInterval, self).__init__(LINE, verts, topology)
+        super().__init__(LINE, verts, topology)
 
 
 class DefaultTriangle(Simplex):
@@ -311,7 +311,7 @@ class DefaultTriangle(Simplex):
         faces = {0: (0, 1, 2)}
         topology = {0: {0: (0,), 1: (1,), 2: (2,)},
                     1: edges, 2: faces}
-        super(DefaultTriangle, self).__init__(TRIANGLE, verts, topology)
+        super().__init__(TRIANGLE, verts, topology)
 
     def get_facet_element(self):
         return DefaultLine()
@@ -327,7 +327,7 @@ class UFCTriangle(UFCSimplex):
         faces = {0: (0, 1, 2)}
         topology = {0: {0: (0,), 1: (1,), 2: (2,)},
                     1: edges, 2: faces}
-        super(UFCTriangle, self).__init__(TRIANGLE, verts, topology)
+        super().__init__(TRIANGLE, verts, topology)
 
     def compute_normal(self, i):
         "UFC consistent normal"
@@ -347,7 +347,7 @@ class IntrepidTriangle(Simplex):
         faces = {0: (0, 1, 2)}
         topology = {0: {0: (0,), 1: (1,), 2: (2,)},
                     1: edges, 2: faces}
-        super(IntrepidTriangle, self).__init__(TRIANGLE, verts, topology)
+        super().__init__(TRIANGLE, verts, topology)
 
     def get_facet_element(self):
         # I think the UFC interval is equivalent to what the
@@ -378,7 +378,7 @@ class DefaultTetrahedron(Simplex):
                  3: (0, 1, 2)}
         tets = {0: (0, 1, 2, 3)}
         topology = {0: vs, 1: edges, 2: faces, 3: tets}
-        super(DefaultTetrahedron, self).__init__(TETRAHEDRON, verts, topology)
+        super().__init__(TETRAHEDRON, verts, topology)
 
     def get_facet_element(self):
         return DefaultTriangle()
@@ -406,7 +406,7 @@ class IntrepidTetrahedron(Simplex):
                  3: (0, 2, 1)}
         tets = {0: (0, 1, 2, 3)}
         topology = {0: vs, 1: edges, 2: faces, 3: tets}
-        super(IntrepidTetrahedron, self).__init__(TETRAHEDRON, verts, topology)
+        super().__init__(TETRAHEDRON, verts, topology)
 
     def get_facet_element(self):
         return IntrepidTriangle()
@@ -434,7 +434,7 @@ class UFCTetrahedron(UFCSimplex):
                  3: (0, 1, 2)}
         tets = {0: (0, 1, 2, 3)}
         topology = {0: vs, 1: edges, 2: faces, 3: tets}
-        super(UFCTetrahedron, self).__init__(TETRAHEDRON, verts, topology)
+        super().__init__(TETRAHEDRON, verts, topology)
 
     def compute_normal(self, i):
         "UFC consistent normals."

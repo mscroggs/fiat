@@ -10,12 +10,13 @@
 # This work is partially supported by the US Department of Energy
 # under award number DE-FG02-04ER25650
 
-from FIAT import dual_set, functional, finite_element
+from FIAT import functional
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import ONPolynomialSet
 import numpy as np
 
 
-class P0Dual(dual_set.DualSet):
+class P0Dual(DualSet):
     def __init__(self, ref_el):
         entity_ids = {}
         nodes = []
@@ -32,13 +33,13 @@ class P0Dual(dual_set.DualSet):
 
         entity_ids[dim] = {0: [0]}
 
-        super(P0Dual, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class P0(finite_element.CiarletElement):
+class P0(CiarletElement):
     def __init__(self, ref_el):
         poly_set = ONPolynomialSet(ref_el, 0)
         dual = P0Dual(ref_el)
         degree = 0
         formdegree = ref_el.get_spatial_dimension()  # n-form
-        super(P0, self).__init__(poly_set, dual, degree, formdegree)
+        super().__init__(poly_set, dual, degree, formdegree)

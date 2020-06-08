@@ -25,7 +25,7 @@ class CiarletElement(FiniteElement):
 
     def __init__(self, poly_set, dual, order, formdegree=None, mapping="affine", ref_el=None):
         ref_el = ref_el or poly_set.get_reference_element()
-        super(CiarletElement, self).__init__(ref_el, dual, order, formdegree, mapping)
+        super().__init__(ref_el, dual, order, formdegree, mapping)
 
         # build generalized Vandermonde matrix
         old_coeffs = poly_set.get_coeffs()
@@ -111,48 +111,3 @@ class CiarletElement(FiniteElement):
         All implementations/subclasses are nodal including this one.
         """
         return True
-
-
-def entity_support_dofs(elem, entity_dim):
-    """Return the map of entity id to the degrees of freedom for which the
-    corresponding basis functions take non-zero values
-
-    :arg elem: FIAT finite element
-    :arg entity_dim: Dimension of the cell subentity.
-    """
-    if not hasattr(elem, "_entity_support_dofs"):
-        elem._entity_support_dofs = {}
-    cache = elem._entity_support_dofs
-    try:
-        return cache[entity_dim]
-    except KeyError:
-        pass
-
-    ref_el = elem.get_reference_element()
-    dim = ref_el.get_spatial_dimension()
-
-    entity_cell = ref_el.construct_subelement(entity_dim)
-    quad = create_quadrature(entity_cell, max(2*elem.degree(), 1))
-    weights = quad.get_weights()
-
-    eps = 1.e-8  # Is this a safe value?
-
-    result = {}
-    for f in elem.entity_dofs()[entity_dim].keys():
-        entity_transform = ref_el.get_entity_transform(entity_dim, f)
-        points = list(map(entity_transform, quad.get_points()))
-
-        # Integrate the square of the basis functions on the facet.
-        vals = np.double(elem.tabulate(0, points)[(0,) * dim])
-        # Ints contains the square of the basis functions
-        # integrated over the facet.
-        if elem.value_shape():
-            # Vector-valued functions.
-            ints = np.dot(np.einsum("...ij,...ij->...j", vals, vals), weights)
-        else:
-            ints = np.dot(vals**2, weights)
-
-        result[f] = [dof for dof, i in enumerate(ints) if i > eps]
-
-    cache[entity_dim] = result
-    return result

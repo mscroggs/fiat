@@ -10,7 +10,7 @@ from sympy import symbols, legendre, Array, diff, lambdify
 import numpy as np
 from FIAT.finite_element import FiniteElement
 from .lagrange import Lagrange
-from FIAT.dual_set import make_entity_closure_ids
+from FIAT.finite_element.dual_set import make_entity_closure_ids
 from FIAT.helpers import mis
 from FIAT.reference_element import (compute_unflattening_map,
                                     flatten_reference_cube)
@@ -28,7 +28,6 @@ def tr(n):
 
 
 class Serendipity(FiniteElement):
-
     def __new__(cls, ref_el, degree):
         dim = ref_el.get_spatial_dimension()
         if dim == 1:
@@ -98,7 +97,7 @@ class Serendipity(FiniteElement):
         assert len(s_list) == cur
         formdegree = 0
 
-        super(Serendipity, self).__init__(ref_el=ref_el, dual=None, order=degree, formdegree=formdegree)
+        super().__init__(ref_el=ref_el, dual=None, order=degree, formdegree=formdegree)
 
         self.basis = {(0,)*dim: Array(s_list)}
         self.basis_callable = {(0,)*dim: lambdify(variables[:dim], Array(s_list),

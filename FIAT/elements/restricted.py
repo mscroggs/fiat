@@ -4,8 +4,7 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT.dual_set import DualSet
-from FIAT.finite_element import CiarletElement
+from FIAT.finite_element import CiarletElement, DualSet
 
 
 class RestrictedElement(CiarletElement):
@@ -59,7 +58,7 @@ class RestrictedElement(CiarletElement):
         assert all(e_mapping == mapping_new[0] for e_mapping in mapping_new)
 
         # Call constructor of CiarletElement
-        super(RestrictedElement, self).__init__(poly_set, dual, 0, element.get_formdegree(), mapping_new[0])
+        super().__init__(poly_set, dual, 0, element.get_formdegree(), mapping_new[0])
 
 
 def sorted_by_key(mapping):

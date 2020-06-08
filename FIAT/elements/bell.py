@@ -8,12 +8,13 @@
 # functionals.  The first 18 basis functions are the reference element
 # bfs, but the extra three are used in the transformation theory.
 
-from FIAT import finite_element, dual_set, functional
+from FIAT import functional
+from FIAT.finite_element import DualSet, CiarletElement
 from FIAT.polynomials import ONPolynomialSet
 from FIAT.reference_element import TRIANGLE, ufc_simplex
 
 
-class BellDualSet(dual_set.DualSet):
+class BellDualSet(DualSet):
     def __init__(self, ref_el):
         entity_ids = {}
         nodes = []
@@ -65,13 +66,13 @@ class BellDualSet(dual_set.DualSet):
 
         entity_ids[2] = {0: []}
 
-        super(BellDualSet, self).__init__(nodes, ref_el, entity_ids)
+        super().__init__(nodes, ref_el, entity_ids)
 
 
-class Bell(finite_element.CiarletElement):
+class Bell(CiarletElement):
     """The Bell finite element."""
 
     def __init__(self, ref_el):
         poly_set = ONPolynomialSet(ref_el, 5)
         dual = BellDualSet(ref_el)
-        super(Bell, self).__init__(poly_set, dual, 5)
+        super().__init__(poly_set, dual, 5)
