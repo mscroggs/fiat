@@ -17,7 +17,7 @@
 
 import numpy as np
 from FIAT import expansions
-from FIAT.functional import index_iterator
+from FIAT.helpers import index_iterator
 
 
 def mis(m, n):

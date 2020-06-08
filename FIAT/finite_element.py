@@ -12,6 +12,7 @@ import numpy as np
 
 from FIAT.polynomial_set import PolynomialSet
 from FIAT.quadrature.quadrature_schemes import create_quadrature
+from FIAT.helpers import index_iterator
 
 
 class FiniteElement(object):
