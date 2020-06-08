@@ -68,7 +68,7 @@ class IntegralMomentOfNormalDerivative(Functional):
             dpt_dict[tuple(pt)] = [(qwts[j]*n[i]*f_at_qpts[j], alphas[i], tuple()) for i in range(sd)]
 
         super().__init__(ref_el, tuple(),
-                            {}, dpt_dict, "IntegralMomentOfNormalDerivative")
+                         {}, dpt_dict, "IntegralMomentOfNormalDerivative")
 
 
 class FrobeniusIntegralMoment(Functional):
@@ -109,7 +109,7 @@ class IntegralMomentOfDivergence(Functional):
             dpt_dict[tuple(pt)] = [(qwts[j]*f_at_qpts[j], alphas[i], (i,)) for i in range(sd)]
 
         super().__init__(ref_el, tuple(),
-                            {}, dpt_dict, "IntegralMomentOfDivergence")
+                         {}, dpt_dict, "IntegralMomentOfDivergence")
 
 
 class IntegralMomentOfTensorDivergence(Functional):
@@ -136,4 +136,4 @@ class IntegralMomentOfTensorDivergence(Functional):
             dpt_dict[tuple(pt)] = [(qwts[q]*f_at_qpts[i, q], alphas[j], (i, j)) for i in range(2) for j in range(2)]
 
         super().__init__(ref_el, tuple(),
-                            {}, dpt_dict, "IntegralMomentOfTensorDivergence")
+                         {}, dpt_dict, "IntegralMomentOfTensorDivergence")

@@ -181,9 +181,9 @@ def _tetrahedron_scheme(degree):
         # Scheme from Zienkiewicz and Taylor, 4 points, degree of precision 2
         a, b = 0.585410196624969, 0.138196601125011
         x = np.array([[a, b, b],
-                   [b, a, b],
-                   [b, b, a],
-                   [b, b, b]])
+                      [b, a, b],
+                      [b, b, a],
+                      [b, b, b]])
         w = np.arange(4, dtype=np.float64)
         w[:] = 1.0/24.0
     elif degree == 3:

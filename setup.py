@@ -27,5 +27,6 @@ setup(name="fenics-fiat",
       download_url=tarball,
       license="LGPL v3 or later",
       packages=["FIAT", "FIAT.reference_element", "FIAT.elements",
-                "FIAT.quadrature", "FIAT.functional", "FIAT.helpers"],
+                "FIAT.quadrature", "FIAT.functional", "FIAT.helpers",
+                "FIAT.finite_element"],
       install_requires=["numpy", "sympy"])

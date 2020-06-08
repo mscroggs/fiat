@@ -66,7 +66,7 @@ class PolynomialSet(object):
 
     def tabulate_new(self, pts):
         return np.dot(self.coeffs,
-                         self.expansion_set.tabulate(self.embedded_degree, pts))
+                      self.expansion_set.tabulate(self.embedded_degree, pts))
 
     def tabulate(self, pts, jet_order=0):
         """Returns the values of the polynomial set."""
@@ -77,8 +77,8 @@ class PolynomialSet(object):
             for alpha in alphas:
                 D = form_matrix_product(self.dmats, alpha)
                 result[alpha] = np.dot(self.coeffs,
-                                          np.dot(np.transpose(D),
-                                                    base_vals))
+                                       np.dot(np.transpose(D),
+                                              base_vals))
         return result
 
     def get_expansion_set(self):

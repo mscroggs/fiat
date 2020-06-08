@@ -16,7 +16,7 @@ from itertools import chain
 import numpy as np
 
 from FIAT import polynomial_set
-from FIAT.helpers import index_iterator
+
 
 class Functional(object):
     r"""Abstract class representing a linear functional.
