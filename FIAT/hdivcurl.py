@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-import numpy
+import numpy as np
 import types
 from FIAT.elements.tensor_product import TensorProductElement
 from FIAT import functional
@@ -52,7 +52,7 @@ def Hdiv(element):
             temp_old = old_result[alpha]
 
             if self._oldmapping == "affine":
-                temp = numpy.zeros((temp_old.shape[0], sd, temp_old.shape[1]), dtype=temp_old.dtype)
+                temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[1]), dtype=temp_old.dtype)
                 # both constituents affine, i.e., they were 0 forms or n-forms.
                 # to sum to n-1, we must have "0-form on an interval" crossed
                 # with something discontinuous.
@@ -72,7 +72,7 @@ def Hdiv(element):
                     raise Exception("Hdiv affine/affine form degrees broke")
 
             elif self._oldmapping == "contravariant piola":
-                temp = numpy.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
+                temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
                 Asd = self.A.get_reference_element().get_spatial_dimension()
                 # one component is affine, one is contravariant piola
                 # the affine one must be an n-form, hence discontinuous
@@ -87,7 +87,7 @@ def Hdiv(element):
                     raise ValueError("Hdiv contravariant piola couldn't find an existing ConPi subelement")
 
             elif self._oldmapping == "covariant piola":
-                temp = numpy.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
+                temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
                 # one component is affine, one is covariant piola
                 # the affine one must be an n-form, hence discontinuous
                 # this component/these components get zeroed out
@@ -96,7 +96,7 @@ def Hdiv(element):
                     Asd = self.A.get_reference_element().get_spatial_dimension()
                     if not Asd == 2:
                         raise ValueError("Must be 2d shape to automatically convert covariant to contravariant")
-                    temp_perp = numpy.zeros(temp_old.shape, dtype=temp_old.dtype)
+                    temp_perp = np.zeros(temp_old.shape, dtype=temp_old.dtype)
                     # first element, so (x2, -x1, 0, ...)
                     temp_perp[:, 0, :] = temp_old[:, 1, :]
                     temp_perp[:, 1, :] = -temp_old[:, 0, :]
@@ -105,7 +105,7 @@ def Hdiv(element):
                     Bsd = self.B.get_reference_element().get_spatial_dimension()
                     if not Bsd == 2:
                         raise ValueError("Must be 2d shape to automatically convert covariant to contravariant")
-                    temp_perp = numpy.zeros(temp_old.shape, dtype=temp_old.dtype)
+                    temp_perp = np.zeros(temp_old.shape, dtype=temp_old.dtype)
                     # second element, so (..., 0, x2, -x1)
                     temp_perp[:, 0, :] = temp_old[:, 1, :]
                     temp_perp[:, 1, :] = -temp_old[:, 0, :]
@@ -174,7 +174,7 @@ def Hcurl(element):
             temp_old = old_result[alpha]
 
             if self._oldmapping == "affine":
-                temp = numpy.zeros((temp_old.shape[0], sd, temp_old.shape[1]), dtype=temp_old.dtype)
+                temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[1]), dtype=temp_old.dtype)
                 # both constituents affine, i.e., they were 0 forms or n-forms.
                 # to sum to 1, we must have "1-form on an interval" crossed with
                 # a bunch of 0-forms (continuous).
@@ -194,7 +194,7 @@ def Hcurl(element):
                     raise Exception("Hcurl affine/affine form degrees broke")
 
             elif self._oldmapping == "covariant piola":
-                temp = numpy.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
+                temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
                 Asd = self.A.get_reference_element().get_spatial_dimension()
                 # one component is affine, one is covariant piola
                 # the affine one must be an 0-form, hence continuous
@@ -209,7 +209,7 @@ def Hcurl(element):
                     raise ValueError("Hdiv contravariant piola couldn't find an existing ConPi subelement")
 
             elif self._oldmapping == "contravariant piola":
-                temp = numpy.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
+                temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
                 # one component is affine, one is contravariant piola
                 # the affine one must be an 0-form, hence continuous
                 # this component/these components get zeroed out
@@ -218,7 +218,7 @@ def Hcurl(element):
                     Asd = self.A.get_reference_element().get_spatial_dimension()
                     if not Asd == 2:
                         raise ValueError("Must be 2d shape to automatically convert contravariant to covariant")
-                    temp_perp = numpy.zeros(temp_old.shape, dtype=temp_old.dtype)
+                    temp_perp = np.zeros(temp_old.shape, dtype=temp_old.dtype)
                     # first element, so (-x2, x1, 0, ...)
                     temp_perp[:, 0, :] = -temp_old[:, 1, :]
                     temp_perp[:, 1, :] = temp_old[:, 0, :]
@@ -227,7 +227,7 @@ def Hcurl(element):
                     Bsd = self.B.get_reference_element().get_spatial_dimension()
                     if not Bsd == 2:
                         raise ValueError("Must be 2d shape to automatically convert contravariant to covariant")
-                    temp_perp = numpy.zeros(temp_old.shape, dtype=temp_old.dtype)
+                    temp_perp = np.zeros(temp_old.shape, dtype=temp_old.dtype)
                     # second element, so (..., 0, -x2, x1)
                     temp_perp[:, 0, :] = -temp_old[:, 1, :]
                     temp_perp[:, 1, :] = temp_old[:, 0, :]

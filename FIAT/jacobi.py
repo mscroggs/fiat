@@ -9,7 +9,7 @@ via Newton's method.  These mainly are used in defining the expansion
 functions over the simplices and in defining quadrature
 rules over each domain."""
 
-import numpy
+import numpy as np
 
 
 def eval_jacobi(a, b, n, x):
@@ -45,11 +45,11 @@ def eval_jacobi(a, b, n, x):
 
 def eval_jacobi_batch(a, b, n, xs):
     """Evaluates all jacobi polynomials with weights a,b
-    up to degree n.  xs is a numpy.array of points.
+    up to degree n.  xs is a np.array of points.
     Returns a two-dimensional array of points, where the
     rows correspond to the Jacobi polynomials and the
     columns correspond to the points."""
-    result = numpy.zeros((n + 1, len(xs)), xs.dtype)
+    result = np.zeros((n + 1, len(xs)), xs.dtype)
     # hack to make sure AD type is propogated through
     for ii in range(result.shape[1]):
         result[0, ii] = 1.0 + xs[ii, 0] - xs[ii, 0]
@@ -86,11 +86,11 @@ def eval_jacobi_deriv(a, b, n, x):
 
 def eval_jacobi_deriv_batch(a, b, n, xs):
     """Evaluates the first derivatives of all jacobi polynomials with
-    weights a,b up to degree n.  xs is a numpy.array of points.
+    weights a,b up to degree n.  xs is a np.array of points.
     Returns a two-dimensional array of points, where the
     rows correspond to the Jacobi polynomials and the
     columns correspond to the points."""
-    results = numpy.zeros((n + 1, len(xs)), "d")
+    results = np.zeros((n + 1, len(xs)), "d")
     if n == 0:
         return results
     else:

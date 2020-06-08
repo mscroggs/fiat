@@ -9,7 +9,7 @@
 
 import itertools
 import math
-import numpy
+import numpy as np
 
 from FIAT import reference_element, expansions, jacobi, orthopoly
 
@@ -27,10 +27,10 @@ class QuadratureRule(object):
         self.wts = wts
 
     def get_points(self):
-        return numpy.array(self.pts)
+        return np.array(self.pts)
 
     def get_weights(self):
-        return numpy.array(self.wts)
+        return np.array(self.wts)
 
     def integrate(self, f):
         return sum([w * f(x) for (x, w) in zip(self.pts, self.wts)])
@@ -49,9 +49,9 @@ class GaussJacobiQuadratureLineRule(QuadratureRule):
         A, b = reference_element.make_affine_mapping(Ref1.get_vertices(),
                                                      ref_el.get_vertices())
 
-        mapping = lambda x: numpy.dot(A, x) + b
+        mapping = lambda x: np.dot(A, x) + b
 
-        scale = numpy.linalg.det(A)
+        scale = np.linalg.det(A)
 
         xs = tuple([tuple(mapping(x_ref)[0]) for x_ref in xs_ref])
         ws = tuple([scale * w for w in ws_ref])
@@ -86,9 +86,9 @@ class GaussLobattoLegendreQuadratureLineRule(QuadratureRule):
         A, b = reference_element.make_affine_mapping(Ref1.get_vertices(),
                                                      ref_el.get_vertices())
 
-        mapping = lambda x: numpy.dot(A, x) + b
+        mapping = lambda x: np.dot(A, x) + b
 
-        scale = numpy.linalg.det(A)
+        scale = np.linalg.det(A)
 
         xs = tuple([tuple(mapping(x_ref)[0]) for x_ref in xs_ref])
         ws = tuple([scale * w for w in ws_ref])
@@ -98,7 +98,7 @@ class GaussLobattoLegendreQuadratureLineRule(QuadratureRule):
 
 class GaussLegendreQuadratureLineRule(QuadratureRule):
     """Produce the Gauss--Legendre quadrature rules on the interval using
-    the implementation in numpy. This facilitates implementing
+    the implementation in np. This facilitates implementing
     discontinuous spectral elements.
 
     The quadrature rule uses m points for a degree of precision of 2m-1.
@@ -108,14 +108,14 @@ class GaussLegendreQuadratureLineRule(QuadratureRule):
             raise ValueError(
                 "Gauss-Legendre quadrature invalid for fewer than 2 points")
 
-        xs_ref, ws_ref = numpy.polynomial.legendre.leggauss(m)
+        xs_ref, ws_ref = np.polynomial.legendre.leggauss(m)
 
         A, b = reference_element.make_affine_mapping(((-1.,), (1.)),
                                                      ref_el.get_vertices())
 
-        mapping = lambda x: numpy.dot(A, x) + b
+        mapping = lambda x: np.dot(A, x) + b
 
-        scale = numpy.linalg.det(A)
+        scale = np.linalg.det(A)
 
         xs = tuple([tuple(mapping(x_ref)[0]) for x_ref in xs_ref])
         ws = tuple([scale * w for w in ws_ref])
@@ -133,18 +133,18 @@ class RadauQuadratureLineRule(QuadratureRule):
         assert m >= 1
         N = m - 1
         # Use Chebyshev-Gauss-Radau nodes as initial guess for LGR nodes
-        x = -numpy.cos(2 * numpy.pi * numpy.linspace(0, N, m) / (2 * N + 1))
+        x = -np.cos(2 * np.pi * np.linspace(0, N, m) / (2 * N + 1))
 
-        P = numpy.zeros((N + 1, N + 2))
+        P = np.zeros((N + 1, N + 2))
 
         xold = 2
 
-        free = numpy.arange(1, N + 1, dtype='int')
+        free = np.arange(1, N + 1, dtype='int')
 
-        while numpy.max(numpy.abs(x - xold)) > 5e-16:
+        while np.max(np.abs(x - xold)) > 5e-16:
             xold = x.copy()
 
-            P[0, :] = (-1) ** numpy.arange(0, N + 2)
+            P[0, :] = (-1) ** np.arange(0, N + 2)
             P[free, 0] = 1
             P[free, 1] = x[free]
 
@@ -156,13 +156,13 @@ class RadauQuadratureLineRule(QuadratureRule):
         # The Legendre-Gauss-Radau Vandermonde
         P = P[:, :-1]
         # Compute the weights
-        w = numpy.zeros(N + 1)
+        w = np.zeros(N + 1)
         w[0] = 2 / (N + 1) ** 2
         w[free] = (1 - x[free])/((N + 1) * P[free, -1])**2
 
         if right:
-            x = numpy.flip(-x)
-            w = numpy.flip(w)
+            x = np.flip(-x)
+            w = np.flip(w)
 
         xs_ref = x
         ws_ref = w
@@ -170,9 +170,9 @@ class RadauQuadratureLineRule(QuadratureRule):
         A, b = reference_element.make_affine_mapping(((-1.,), (1.)),
                                                      ref_el.get_vertices())
 
-        mapping = lambda x: numpy.dot(A, x) + b
+        mapping = lambda x: np.dot(A, x) + b
 
-        scale = numpy.linalg.det(A)
+        scale = np.linalg.det(A)
 
         xs = tuple([tuple(mapping(x_ref)[0]) for x_ref in xs_ref])
         ws = tuple([scale * w for w in ws_ref])
@@ -196,9 +196,9 @@ class CollapsedQuadratureTriangleRule(QuadratureRule):
         Ref1 = reference_element.DefaultTriangle()
         A, b = reference_element.make_affine_mapping(Ref1.get_vertices(),
                                                      ref_el.get_vertices())
-        mapping = lambda x: numpy.dot(A, x) + b
+        mapping = lambda x: np.dot(A, x) + b
 
-        scale = numpy.linalg.det(A)
+        scale = np.linalg.det(A)
 
         pts = tuple([tuple(mapping(x)) for x in pts_ref])
 
@@ -224,9 +224,9 @@ class CollapsedQuadratureTetrahedronRule(QuadratureRule):
         Ref1 = reference_element.DefaultTetrahedron()
         A, b = reference_element.make_affine_mapping(Ref1.get_vertices(),
                                                      ref_el.get_vertices())
-        mapping = lambda x: numpy.dot(A, x) + b
+        mapping = lambda x: np.dot(A, x) + b
 
-        scale = numpy.linalg.det(A)
+        scale = np.linalg.det(A)
 
         pts = tuple([tuple(mapping(x)) for x in pts_ref])
 
@@ -255,15 +255,15 @@ class UFCTetrahedronFaceQuadratureRule(QuadratureRule):
         vertices = reference_tet.get_vertices_of_subcomplex(face)
 
         # Use tet to map points and weights on the appropriate face
-        vertices = [numpy.array(list(vertex)) for vertex in vertices]
+        vertices = [np.array(list(vertex)) for vertex in vertices]
         x0 = vertices[0]
-        J = numpy.vstack([vertices[1] - x0, vertices[2] - x0]).T
-        # This is just a very numpyfied way of writing J*p + x0:
-        points = numpy.einsum("ij,kj->ki", J, ref_points) + x0
+        J = np.vstack([vertices[1] - x0, vertices[2] - x0]).T
+        # This is just a very npfied way of writing J*p + x0:
+        points = np.einsum("ij,kj->ki", J, ref_points) + x0
 
         # Map weights: multiply reference weights by sqrt(|J^T J|)
-        detJTJ = numpy.linalg.det(numpy.dot(J.T, J))
-        weights = numpy.sqrt(detJTJ) * ref_weights
+        detJTJ = np.linalg.det(np.dot(J.T, J))
+        weights = np.sqrt(detJTJ) * ref_weights
 
         # Initialize super class with new points and weights
         QuadratureRule.__init__(self, reference_tet, points, weights)
@@ -316,7 +316,7 @@ def make_tensor_product_quadrature(*quad_rules):
     # Coordinates are "concatenated", weights are multiplied
     pts = [list(itertools.chain(*pt_tuple))
            for pt_tuple in itertools.product(*[q.pts for q in quad_rules])]
-    wts = [numpy.prod(wt_tuple)
+    wts = [np.prod(wt_tuple)
            for wt_tuple in itertools.product(*[q.wts for q in quad_rules])]
     return QuadratureRule(ref_el, pts, wts)
 

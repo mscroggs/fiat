@@ -8,10 +8,10 @@
 # Modified by David A. Ham (david.ham@imperial.ac.uk), 2014
 # Modified by Thomas H. Gibson (t.gibson15@imperial.ac.uk), 2016
 
-import numpy
+import numpy as np
 
 from FIAT.polynomial_set import PolynomialSet
-from FIAT.quadrature_schemes import create_quadrature
+from FIAT.quadrature.quadrature_schemes import create_quadrature
 
 
 class FiniteElement(object):
@@ -119,23 +119,23 @@ class CiarletElement(FiniteElement):
 
         shp = dualmat.shape
         if len(shp) > 2:
-            num_cols = numpy.prod(shp[1:])
+            num_cols = np.prod(shp[1:])
 
-            A = numpy.reshape(dualmat, (dualmat.shape[0], num_cols))
-            B = numpy.reshape(old_coeffs, (old_coeffs.shape[0], num_cols))
+            A = np.reshape(dualmat, (dualmat.shape[0], num_cols))
+            B = np.reshape(old_coeffs, (old_coeffs.shape[0], num_cols))
         else:
             A = dualmat
             B = old_coeffs
 
-        V = numpy.dot(A, numpy.transpose(B))
+        V = np.dot(A, np.transpose(B))
         self.V = V
 
-        Vinv = numpy.linalg.inv(V)
+        Vinv = np.linalg.inv(V)
 
-        new_coeffs_flat = numpy.dot(numpy.transpose(Vinv), B)
+        new_coeffs_flat = np.dot(np.transpose(Vinv), B)
 
         new_shp = tuple([new_coeffs_flat.shape[0]] + list(shp[1:]))
-        new_coeffs = numpy.reshape(new_coeffs_flat, new_shp)
+        new_coeffs = np.reshape(new_coeffs_flat, new_shp)
 
         self.poly_set = PolynomialSet(ref_el,
                                       poly_set.get_degree(),
@@ -229,14 +229,14 @@ def entity_support_dofs(elem, entity_dim):
         points = list(map(entity_transform, quad.get_points()))
 
         # Integrate the square of the basis functions on the facet.
-        vals = numpy.double(elem.tabulate(0, points)[(0,) * dim])
+        vals = np.double(elem.tabulate(0, points)[(0,) * dim])
         # Ints contains the square of the basis functions
         # integrated over the facet.
         if elem.value_shape():
             # Vector-valued functions.
-            ints = numpy.dot(numpy.einsum("...ij,...ij->...j", vals, vals), weights)
+            ints = np.dot(np.einsum("...ij,...ij->...j", vals, vals), weights)
         else:
-            ints = numpy.dot(vals**2, weights)
+            ints = np.dot(vals**2, weights)
 
         result[f] = [dof for dof, i in enumerate(ints) if i > eps]
 

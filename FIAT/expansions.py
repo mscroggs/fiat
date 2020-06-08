@@ -7,7 +7,7 @@
 and Sherwin.  These are parametrized over a reference element so as
 to allow users to get coordinates that they want."""
 
-import numpy
+import numpy as np
 import math
 import sympy
 from FIAT import reference_element
@@ -43,20 +43,20 @@ def _tabulate_dpts(tabulator, D, n, order, pts):
                 out.append(form_derivative(f))
         return out
 
-    def numpy_lambdify(X, F):
+    def np_lambdify(X, F):
         '''Unfortunately, SymPy's own lambdify() doesn't work well with
-        NumPy in that simple functions like
+        np in that simple functions like
             lambda x: 1.0,
-        when evaluated with NumPy arrays, return just "1.0" instead of
+        when evaluated with np arrays, return just "1.0" instead of
         an array of 1s with the same shape as x. This function does that.
         '''
         try:
-            lambda_x = [numpy_lambdify(X, f) for f in F]
+            lambda_x = [np_lambdify(X, f) for f in F]
         except TypeError:  # 'function' object is not iterable
             # SymPy's lambdify also works on functions that return arrays.
             # However, use it componentwise here so we can add 0*x to each
             # component individually. This is necessary to maintain shapes
-            # if evaluated with NumPy arrays.
+            # if evaluated with np arrays.
             lmbd_tmp = sympy.lambdify(X, F)
             lambda_x = lambda x: lmbd_tmp(x) + 0 * x[0]
         return lambda_x
@@ -79,12 +79,12 @@ def _tabulate_dpts(tabulator, D, n, order, pts):
     data = (order + 1) * [None]
     for r in range(order + 1):
         shape = [len(symbolic_tab), len(pts)] + r * [D]
-        data[r] = numpy.empty(shape)
+        data[r] = np.empty(shape)
         for i, phi in enumerate(symbolic_tab):
             # Evaluate the function numerically using lambda expressions
-            deriv_lambda = numpy_lambdify(X, phi[r])
+            deriv_lambda = np_lambdify(X, phi[r])
             data[r][i] = \
-                numpy.array(evaluate_lambda(deriv_lambda, pts.T)).T
+                np.array(evaluate_lambda(deriv_lambda, pts.T)).T
             # Symbolically compute the next derivative.
             # This actually happens once too many here; never mind for
             # now.
@@ -120,19 +120,19 @@ class LineExpansionSet(object):
         v1 = ref_el.get_vertices()
         v2 = self.base_ref_el.get_vertices()
         self.A, self.b = reference_element.make_affine_mapping(v1, v2)
-        self.mapping = lambda x: numpy.dot(self.A, x) + self.b
-        self.scale = numpy.sqrt(numpy.linalg.det(self.A))
+        self.mapping = lambda x: np.dot(self.A, x) + self.b
+        self.scale = np.sqrt(np.linalg.det(self.A))
 
     def get_num_members(self, n):
         return n + 1
 
     def tabulate(self, n, pts):
-        """Returns a numpy array A[i,j] = phi_i(pts[j])"""
+        """Returns a np array A[i,j] = phi_i(pts[j])"""
         if len(pts) > 0:
-            ref_pts = numpy.array([self.mapping(pt) for pt in pts])
+            ref_pts = np.array([self.mapping(pt) for pt in pts])
             psitilde_as = jacobi.eval_jacobi_batch(0, 0, n, ref_pts)
 
-            results = numpy.zeros((n + 1, len(pts)), type(pts[0][0]))
+            results = np.zeros((n + 1, len(pts)), type(pts[0][0]))
             for k in range(n + 1):
                 results[k, :] = psitilde_as[k, :] * math.sqrt(k + 0.5)
 
@@ -145,15 +145,15 @@ class LineExpansionSet(object):
         A[i,j] = D phi_i(pts[j]).  The tuple is returned for
         compatibility with the interfaces of the triangle and
         tetrahedron expansions."""
-        ref_pts = numpy.array([self.mapping(pt) for pt in pts])
+        ref_pts = np.array([self.mapping(pt) for pt in pts])
         psitilde_as_derivs = jacobi.eval_jacobi_deriv_batch(0, 0, n, ref_pts)
 
         # Jacobi polynomials defined on [-1, 1], first derivatives need scaling
         psitilde_as_derivs *= 2.0 / self.ref_el.volume()
 
-        results = numpy.zeros((n + 1, len(pts)), "d")
+        results = np.zeros((n + 1, len(pts)), "d")
         for k in range(0, n + 1):
-            results[k, :] = psitilde_as_derivs[k, :] * numpy.sqrt(k + 0.5)
+            results[k, :] = psitilde_as_derivs[k, :] * np.sqrt(k + 0.5)
 
         vals = self.tabulate(n, pts)
         deriv_vals = (results,)
@@ -180,17 +180,17 @@ class TriangleExpansionSet(object):
         v1 = ref_el.get_vertices()
         v2 = self.base_ref_el.get_vertices()
         self.A, self.b = reference_element.make_affine_mapping(v1, v2)
-        self.mapping = lambda x: numpy.dot(self.A, x) + self.b
-#        self.scale = numpy.sqrt(numpy.linalg.det(self.A))
+        self.mapping = lambda x: np.dot(self.A, x) + self.b
+#        self.scale = np.sqrt(np.linalg.det(self.A))
 
     def get_num_members(self, n):
         return (n + 1) * (n + 2) // 2
 
     def tabulate(self, n, pts):
         if len(pts) == 0:
-            return numpy.array([])
+            return np.array([])
         else:
-            return numpy.array(self._tabulate(n, numpy.array(pts).T))
+            return np.array(self._tabulate(n, np.array(pts).T))
 
     def _tabulate(self, n, pts):
         '''A version of tabulate() that also works for a single point.
@@ -246,7 +246,7 @@ class TriangleExpansionSet(object):
 
     def tabulate_derivatives(self, n, pts):
         order = 1
-        data = _tabulate_dpts(self._tabulate, 2, n, order, numpy.array(pts))
+        data = _tabulate_dpts(self._tabulate, 2, n, order, np.array(pts))
         # Put data in the required data structure, i.e.,
         # k-tuples which contain the value, and the k-1 derivatives
         # (gradient, Hessian, ...)
@@ -258,7 +258,7 @@ class TriangleExpansionSet(object):
         return data2
 
     def tabulate_jet(self, n, pts, order=1):
-        return _tabulate_dpts(self._tabulate, 2, n, order, numpy.array(pts))
+        return _tabulate_dpts(self._tabulate, 2, n, order, np.array(pts))
 
 
 class TetrahedronExpansionSet(object):
@@ -272,17 +272,17 @@ class TetrahedronExpansionSet(object):
         v1 = ref_el.get_vertices()
         v2 = self.base_ref_el.get_vertices()
         self.A, self.b = reference_element.make_affine_mapping(v1, v2)
-        self.mapping = lambda x: numpy.dot(self.A, x) + self.b
-        self.scale = numpy.sqrt(numpy.linalg.det(self.A))
+        self.mapping = lambda x: np.dot(self.A, x) + self.b
+        self.scale = np.sqrt(np.linalg.det(self.A))
 
     def get_num_members(self, n):
         return (n + 1) * (n + 2) * (n + 3) // 6
 
     def tabulate(self, n, pts):
         if len(pts) == 0:
-            return numpy.array([])
+            return np.array([])
         else:
-            return numpy.array(self._tabulate(n, numpy.array(pts).T))
+            return np.array(self._tabulate(n, np.array(pts).T))
 
     def _tabulate(self, n, pts):
         '''A version of tabulate() that also works for a single point.
@@ -359,7 +359,7 @@ class TetrahedronExpansionSet(object):
     def tabulate_derivatives(self, n, pts):
         order = 1
         D = 3
-        data = _tabulate_dpts(self._tabulate, D, n, order, numpy.array(pts))
+        data = _tabulate_dpts(self._tabulate, D, n, order, np.array(pts))
         # Put data in the required data structure, i.e.,
         # k-tuples which contain the value, and the k-1 derivatives
         # (gradient, Hessian, ...)
@@ -371,7 +371,7 @@ class TetrahedronExpansionSet(object):
         return data2
 
     def tabulate_jet(self, n, pts, order=1):
-        return _tabulate_dpts(self._tabulate, 3, n, order, numpy.array(pts))
+        return _tabulate_dpts(self._tabulate, 3, n, order, np.array(pts))
 
 
 def get_expansion_set(ref_el):

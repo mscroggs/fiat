@@ -49,7 +49,7 @@ class BellDualSet(dual_set.DualSet):
             cur += 6
 
         # we need an edge quadrature rule for the moment
-        from FIAT.quadrature_schemes import create_quadrature
+        from FIAT.quadrature.quadrature_schemes import create_quadrature
         from FIAT.jacobi import eval_jacobi
         rline = ufc_simplex(1)
         q1d = create_quadrature(rline, 8)

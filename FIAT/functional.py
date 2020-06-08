@@ -14,7 +14,7 @@
 
 from collections import OrderedDict
 from itertools import chain
-import numpy
+import numpy as np
 import sympy
 
 from FIAT import polynomial_set
@@ -136,7 +136,7 @@ class Functional(object):
         npts = len(pts)
 
         bfs = es.tabulate(ed, pts)
-        result = numpy.zeros(poly_set.coeffs.shape[1:], "d")
+        result = np.zeros(poly_set.coeffs.shape[1:], "d")
 
         # loop over points
         for j in range(npts):
@@ -225,7 +225,7 @@ class PointDerivative(Functional):
         x = list(self.deriv_dict.keys())[0]
 
         X = sympy.DeferredVector('x')
-        dX = numpy.asarray([X[i] for i in range(len(x))])
+        dX = np.asarray([X[i] for i in range(len(x))])
 
         dvars = tuple(d for d, a in zip(dX, self.alpha)
                       for count in range(a))
@@ -256,7 +256,7 @@ class PointNormalSecondDerivative(Functional):
         n = ref_el.compute_normal(facet_no)
         self.n = n
         sd = ref_el.get_spatial_dimension()
-        tau = numpy.zeros((sd*(sd+1)//2,))
+        tau = np.zeros((sd*(sd+1)//2,))
 
         alphas = []
         cur = 0
@@ -300,8 +300,8 @@ class IntegralMoment(Functional):
     def __call__(self, fn):
         """Evaluate the functional on the function fn."""
         pts = list(self.pt_dict.keys())
-        wts = numpy.array([foo[0][0] for foo in list(self.pt_dict.values())])
-        result = numpy.dot([fn(p) for p in pts], wts)
+        wts = np.array([foo[0][0] for foo in list(self.pt_dict.values())])
+        result = np.dot([fn(p) for p in pts], wts)
 
         if self.comp:
             result = result[self.comp]
@@ -438,7 +438,7 @@ class PointwiseInnerProductEvaluation(Functional):
     def __init__(self, ref_el, v, w, p):
         sd = ref_el.get_spatial_dimension()
 
-        wvT = numpy.outer(w, v)
+        wvT = np.outer(w, v)
 
         pt_dict = {p: [(wvT[i][j], (i, j))
                        for i, j in index_iterator((sd, sd))]}

@@ -15,7 +15,7 @@
 # we have an interface for defining sets of functionals (moments against
 # an entire set of polynomials)
 
-import numpy
+import numpy as np
 from FIAT import expansions
 from FIAT.functional import index_iterator
 
@@ -65,7 +65,7 @@ class PolynomialSet(object):
         self.dmats = dmats
 
     def tabulate_new(self, pts):
-        return numpy.dot(self.coeffs,
+        return np.dot(self.coeffs,
                          self.expansion_set.tabulate(self.embedded_degree, pts))
 
     def tabulate(self, pts, jet_order=0):
@@ -76,8 +76,8 @@ class PolynomialSet(object):
             alphas = mis(self.ref_el.get_spatial_dimension(), i)
             for alpha in alphas:
                 D = form_matrix_product(self.dmats, alpha)
-                result[alpha] = numpy.dot(self.coeffs,
-                                          numpy.dot(numpy.transpose(D),
+                result[alpha] = np.dot(self.coeffs,
+                                          np.dot(np.transpose(D),
                                                     base_vals))
         return result
 
@@ -109,7 +109,7 @@ class PolynomialSet(object):
 
     def take(self, items):
         """Extracts subset of polynomials given by items."""
-        new_coeffs = numpy.take(self.get_coeffs(), items, 0)
+        new_coeffs = np.take(self.get_coeffs(), items, 0)
         return PolynomialSet(self.ref_el, self.degree, self.embedded_degree,
                              self.expansion_set, new_coeffs, self.dmats)
 
@@ -126,8 +126,8 @@ class ONPolynomialSet(PolynomialSet):
         if shape == tuple():
             num_components = 1
         else:
-            flat_shape = numpy.ravel(shape)
-            num_components = numpy.prod(flat_shape)
+            flat_shape = np.ravel(shape)
+            num_components = np.prod(flat_shape)
         num_exp_functions = expansions.polynomial_dimension(ref_el, degree)
         num_members = num_components * num_exp_functions
         embedded_degree = degree
@@ -136,13 +136,13 @@ class ONPolynomialSet(PolynomialSet):
 
         # set up coefficients
         coeffs_shape = tuple([num_members] + list(shape) + [num_exp_functions])
-        coeffs = numpy.zeros(coeffs_shape, "d")
+        coeffs = np.zeros(coeffs_shape, "d")
 
         # use functional's index_iterator function
         cur_bf = 0
 
         if shape == tuple():
-            coeffs = numpy.eye(num_members)
+            coeffs = np.eye(num_members)
         else:
             for idx in index_iterator(shape):
                 n = expansions.polynomial_dimension(ref_el, embedded_degree)
@@ -153,18 +153,18 @@ class ONPolynomialSet(PolynomialSet):
 
         # construct dmats
         if degree == 0:
-            dmats = [numpy.array([[0.0]], "d") for i in range(sd)]
+            dmats = [np.array([[0.0]], "d") for i in range(sd)]
         else:
             pts = ref_el.make_points(sd, 0, degree + sd + 1)
 
-            v = numpy.transpose(expansion_set.tabulate(degree, pts))
-            vinv = numpy.linalg.inv(v)
+            v = np.transpose(expansion_set.tabulate(degree, pts))
+            vinv = np.linalg.inv(v)
 
             dv = expansion_set.tabulate_derivatives(degree, pts)
             dtildes = [[[a[1][i] for a in dvrow] for dvrow in dv]
                        for i in range(sd)]
 
-            dmats = [numpy.dot(vinv, numpy.transpose(dtilde))
+            dmats = [np.dot(vinv, np.transpose(dtilde))
                      for dtilde in dtildes]
 
         PolynomialSet.__init__(self, ref_el, degree, embedded_degree,
@@ -181,17 +181,17 @@ def project(f, U, Q):
     wts = Q.get_weights()
     f_at_qps = [f(x) for x in pts]
     U_at_qps = U.tabulate(pts)
-    coeffs = numpy.array([sum(wts * f_at_qps * phi) for phi in U_at_qps])
+    coeffs = np.array([sum(wts * f_at_qps * phi) for phi in U_at_qps])
     return coeffs
 
 
 def form_matrix_product(mats, alpha):
     """Forms product over mats[i]**alpha[i]"""
     m = mats[0].shape[0]
-    result = numpy.eye(m)
+    result = np.eye(m)
     for i in range(len(alpha)):
         for j in range(alpha[i]):
-            result = numpy.dot(mats[i], result)
+            result = np.dot(mats[i], result)
     return result
 
 
@@ -202,21 +202,21 @@ def polynomial_set_union_normalized(A, B):
     span via SVD.
 
     """
-    new_coeffs = numpy.array(list(A.coeffs) + list(B.coeffs))
+    new_coeffs = np.array(list(A.coeffs) + list(B.coeffs))
     func_shape = new_coeffs.shape[1:]
     if len(func_shape) == 1:
-        (u, sig, vt) = numpy.linalg.svd(new_coeffs)
+        (u, sig, vt) = np.linalg.svd(new_coeffs)
         num_sv = len([s for s in sig if abs(s) > 1.e-10])
         coeffs = vt[:num_sv]
     else:
         new_shape0 = new_coeffs.shape[0]
-        new_shape1 = numpy.prod(func_shape)
+        new_shape1 = np.prod(func_shape)
         newshape = (new_shape0, new_shape1)
-        nc = numpy.reshape(new_coeffs, newshape)
-        (u, sig, vt) = numpy.linalg.svd(nc, 1)
+        nc = np.reshape(new_coeffs, newshape)
+        (u, sig, vt) = np.linalg.svd(nc, 1)
         num_sv = len([s for s in sig if abs(s) > 1.e-10])
 
-        coeffs = numpy.reshape(vt[:num_sv], tuple([num_sv] + list(func_shape)))
+        coeffs = np.reshape(vt[:num_sv], tuple([num_sv] + list(func_shape)))
 
     return PolynomialSet(A.get_reference_element(),
                          A.get_degree(),
@@ -247,7 +247,7 @@ class ONSymTensorPolynomialSet(PolynomialSet):
 
         # set up coefficients for symmetric tensors
         coeffs_shape = tuple([num_members] + list(shape) + [num_exp_functions])
-        coeffs = numpy.zeros(coeffs_shape, "d")
+        coeffs = np.zeros(coeffs_shape, "d")
         cur_bf = 0
         for [i, j] in index_iterator(shape):
             n = expansions.polynomial_dimension(ref_el, embedded_degree)
@@ -266,11 +266,11 @@ class ONSymTensorPolynomialSet(PolynomialSet):
 
         # construct dmats. this is the same as ONPolynomialSet.
         pts = ref_el.make_points(sd, 0, degree + sd + 1)
-        v = numpy.transpose(expansion_set.tabulate(degree, pts))
-        vinv = numpy.linalg.inv(v)
+        v = np.transpose(expansion_set.tabulate(degree, pts))
+        vinv = np.linalg.inv(v)
         dv = expansion_set.tabulate_derivatives(degree, pts)
         dtildes = [[[a[1][i] for a in dvrow] for dvrow in dv]
                    for i in range(sd)]
-        dmats = [numpy.dot(vinv, numpy.transpose(dtilde)) for dtilde in dtildes]
+        dmats = [np.dot(vinv, np.transpose(dtilde)) for dtilde in dtildes]
         PolynomialSet.__init__(self, ref_el, degree, embedded_degree,
                                expansion_set, coeffs, dmats)

@@ -6,7 +6,7 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-import numpy
+import numpy as np
 import collections
 
 from FIAT import polynomial_set
@@ -78,7 +78,7 @@ class DualSet(object):
 
         riesz_shape = tuple([num_nodes] + list(tshape) + [num_exp])
 
-        self.mat = numpy.zeros(riesz_shape, "d")
+        self.mat = np.zeros(riesz_shape, "d")
 
         # Dictionaries mapping pts to which functionals they come from
         pts_to_ells = collections.OrderedDict()
