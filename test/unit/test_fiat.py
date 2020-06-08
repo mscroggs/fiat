@@ -21,33 +21,34 @@ import pytest
 
 from FIAT.reference_element import LINE, ReferenceElement
 from FIAT.reference_element import UFCInterval, UFCTriangle, UFCTetrahedron
-from FIAT.lagrange import Lagrange
-from FIAT.discontinuous_lagrange import DiscontinuousLagrange   # noqa: F401
-from FIAT.discontinuous_taylor import DiscontinuousTaylor       # noqa: F401
-from FIAT.P0 import P0                                          # noqa: F401
-from FIAT.crouzeix_raviart import CrouzeixRaviart               # noqa: F401
-from FIAT.raviart_thomas import RaviartThomas                   # noqa: F401
-from FIAT.discontinuous_raviart_thomas import DiscontinuousRaviartThomas  # noqa: F401
-from FIAT.brezzi_douglas_marini import BrezziDouglasMarini      # noqa: F401
-from FIAT.mixed import MixedElement
-from FIAT.nedelec import Nedelec                                # noqa: F401
-from FIAT.nedelec_second_kind import NedelecSecondKind          # noqa: F401
-from FIAT.regge import Regge                                    # noqa: F401
-from FIAT.hdiv_trace import HDivTrace, map_to_reference_facet   # noqa: F401
-from FIAT.hellan_herrmann_johnson import HellanHerrmannJohnson  # noqa: F401
-from FIAT.brezzi_douglas_fortin_marini import BrezziDouglasFortinMarini  # noqa: F401
-from FIAT.gauss_legendre import GaussLegendre                   # noqa: F401
-from FIAT.gauss_lobatto_legendre import GaussLobattoLegendre    # noqa: F401
-from FIAT.restricted import RestrictedElement                   # noqa: F401
-from FIAT.tensor_product import TensorProductElement            # noqa: F401
-from FIAT.tensor_product import FlattenedDimensions             # noqa: F401
-from FIAT.hdivcurl import Hdiv, Hcurl                           # noqa: F401
-from FIAT.argyris import Argyris, QuinticArgyris                # noqa: F401
-from FIAT.hermite import CubicHermite                           # noqa: F401
-from FIAT.morley import Morley                                  # noqa: F401
-from FIAT.bubble import Bubble
-from FIAT.enriched import EnrichedElement                       # noqa: F401
-from FIAT.nodal_enriched import NodalEnrichedElement
+from FIAT import Lagrange
+from FIAT import DiscontinuousLagrange   # noqa: F401
+from FIAT import DiscontinuousTaylor       # noqa: F401
+from FIAT import P0                                          # noqa: F401
+from FIAT import CrouzeixRaviart               # noqa: F401
+from FIAT import RaviartThomas                   # noqa: F401
+from FIAT import DiscontinuousRaviartThomas  # noqa: F401
+from FIAT import BrezziDouglasMarini      # noqa: F401
+from FIAT import MixedElement
+from FIAT import Nedelec                                # noqa: F401
+from FIAT import NedelecSecondKind          # noqa: F401
+from FIAT import Regge                                    # noqa: F401
+from FIAT import HDivTrace                  # noqa: F401
+from FIAT.elements.hdiv_trace import map_to_reference_facet   # noqa: F401
+from FIAT import HellanHerrmannJohnson  # noqa: F401
+from FIAT import BrezziDouglasFortinMarini  # noqa: F401
+from FIAT import GaussLegendre                   # noqa: F401
+from FIAT import GaussLobattoLegendre    # noqa: F401
+from FIAT import RestrictedElement                   # noqa: F401
+from FIAT import TensorProductElement            # noqa: F401
+from FIAT.elements.tensor_product import FlattenedDimensions             # noqa: F401
+from FIAT import Hdiv, Hcurl                           # noqa: F401
+from FIAT import Argyris, QuinticArgyris                # noqa: F401
+from FIAT import CubicHermite                           # noqa: F401
+from FIAT import Morley                                  # noqa: F401
+from FIAT import Bubble
+from FIAT import EnrichedElement                       # noqa: F401
+from FIAT import NodalEnrichedElement
 
 
 I = UFCInterval()  # noqa: E741

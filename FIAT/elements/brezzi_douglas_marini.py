@@ -6,7 +6,8 @@
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
 from FIAT import (finite_element, quadrature, functional, dual_set,
-                  polynomial_set, nedelec)
+                  polynomial_set)
+from . import nedelec
 
 
 class BDMDualSet(dual_set.DualSet):

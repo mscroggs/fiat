@@ -6,11 +6,11 @@
 
 from itertools import chain
 
-import numpy
+import numpy as np
 
 from FIAT.finite_element import FiniteElement
 from FIAT.dual_set import DualSet
-from FIAT.mixed import concatenate_entity_dofs
+from .mixed import concatenate_entity_dofs
 
 
 __all__ = ['EnrichedElement']
@@ -89,7 +89,7 @@ class EnrichedElement(FiniteElement):
         """Return tabulated values of derivatives up to given order of
         basis functions at given points."""
 
-        num_components = numpy.prod(self.value_shape())
+        num_components = np.prod(self.value_shape())
         table_shape = (self.space_dimension(), num_components, len(points))
 
         table = {}
@@ -104,11 +104,11 @@ class EnrichedElement(FiniteElement):
 
                 if dtuple not in table:
                     if num_components == 1:
-                        table[dtuple] = numpy.zeros((self.space_dimension(), len(points)),
-                                                    dtype=etable[dtuple].dtype)
+                        table[dtuple] = np.zeros((self.space_dimension(), len(points)),
+                                                 dtype=etable[dtuple].dtype)
                     else:
-                        table[dtuple] = numpy.zeros(table_shape,
-                                                    dtype=etable[dtuple].dtype)
+                        table[dtuple] = np.zeros(table_shape,
+                                                 dtype=etable[dtuple].dtype)
 
                 table[dtuple][irange][:] = etable[dtuple]
 

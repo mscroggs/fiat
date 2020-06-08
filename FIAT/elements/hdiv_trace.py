@@ -5,7 +5,7 @@
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
 import numpy as np
-from FIAT.discontinuous_lagrange import DiscontinuousLagrange
+from .discontinuous_lagrange import DiscontinuousLagrange
 from FIAT.dual_set import DualSet
 from FIAT.finite_element import FiniteElement
 from FIAT.functional import PointEvaluation
@@ -14,7 +14,7 @@ from FIAT.reference_element import (ufc_simplex, POINT,
                                     LINE, QUADRILATERAL,
                                     TRIANGLE, TETRAHEDRON,
                                     TENSORPRODUCT)
-from FIAT.tensor_product import TensorProductElement
+from .tensor_product import TensorProductElement
 
 # Numerical tolerance for facet-entity identifications
 epsilon = 1e-10

@@ -7,7 +7,7 @@
 
 from FIAT import (expansions, polynomial_set, quadrature, dual_set,
                   finite_element, functional)
-import numpy
+import numpy as np
 from itertools import chain
 
 
@@ -33,22 +33,22 @@ def RTSpace(ref_el, deg):
 
     # have to work on this through "tabulate" interface
     # first, tabulate PkH at quadrature points
-    Qpts = numpy.array(Q.get_points())
-    Qwts = numpy.array(Q.get_weights())
+    Qpts = np.array(Q.get_points())
+    Qwts = np.array(Q.get_weights())
 
     zero_index = tuple([0 for i in range(sd)])
 
     PkH_at_Qpts = PkH.tabulate(Qpts)[zero_index]
     Pkp1_at_Qpts = Pkp1.tabulate(Qpts)[zero_index]
 
-    PkHx_coeffs = numpy.zeros((PkH.get_num_members(),
-                               sd,
-                               Pkp1.get_num_members()), "d")
+    PkHx_coeffs = np.zeros((PkH.get_num_members(),
+                            sd,
+                            Pkp1.get_num_members()), "d")
 
     for i in range(PkH.get_num_members()):
         for j in range(sd):
             fooij = PkH_at_Qpts[i, :] * Qpts[:, j] * Qwts
-            PkHx_coeffs[i, j, :] = numpy.dot(Pkp1_at_Qpts, fooij)
+            PkHx_coeffs[i, j, :] = np.dot(Pkp1_at_Qpts, fooij)
 
     PkHx = polynomial_set.PolynomialSet(ref_el,
                                         deg,

@@ -6,9 +6,10 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, polynomial_set, dual_set, functional, P0, quadrature
+from FIAT import finite_element, polynomial_set, dual_set, functional, quadrature
+from .p0 import P0
 from FIAT.polynomial_set import mis
-import numpy
+import numpy as np
 
 
 class DiscontinuousTaylorDualSet(dual_set.DualSet):
@@ -22,11 +23,11 @@ class DiscontinuousTaylorDualSet(dual_set.DualSet):
 
         Q = quadrature.make_quadrature(ref_el, 2 * (degree + 1))
 
-        f_at_qpts = numpy.ones(len(Q.wts))
+        f_at_qpts = np.ones(len(Q.wts))
         nodes.append(functional.IntegralMoment(ref_el, Q, f_at_qpts))
 
         vertices = ref_el.get_vertices()
-        midpoint = tuple(sum(numpy.array(vertices)) / len(vertices))
+        midpoint = tuple(sum(np.array(vertices)) / len(vertices))
         for k in range(1, degree + 1):
             # Loop over all multi-indices of degree k.
             for alpha in mis(dim, k):
@@ -51,6 +52,6 @@ class HigherOrderDiscontinuousTaylor(finite_element.CiarletElement):
 
 def DiscontinuousTaylor(ref_el, degree):
     if degree == 0:
-        return P0.P0(ref_el)
+        return P0(ref_el)
     else:
         return HigherOrderDiscontinuousTaylor(ref_el, degree)

@@ -1,7 +1,8 @@
 from FIAT import (finite_element, functional, dual_set,
-                  polynomial_set, lagrange)
+                  polynomial_set)
+from . import lagrange
 
-import numpy
+import numpy as np
 
 
 class BDFMDualSet(dual_set.DualSet):
@@ -78,18 +79,18 @@ def BDFMSpace(ref_el, order):
     lagrange_ele = lagrange.Lagrange(ref_el, order)
     # Select the dofs associated with the edges.
     edge_dofs_dict = lagrange_ele.dual.get_entity_ids()[sd - 1]
-    edge_dofs = numpy.array([(edge, dof)
-                             for edge, dofs in list(edge_dofs_dict.items())
-                             for dof in dofs])
+    edge_dofs = np.array([(edge, dof)
+                          for edge, dofs in list(edge_dofs_dict.items())
+                          for dof in dofs])
 
     tangent_polys = lagrange_ele.poly_set.take(edge_dofs[:, 1])
-    new_coeffs = numpy.zeros((tangent_polys.get_num_members(), sd, tangent_polys.coeffs.shape[-1]))
+    new_coeffs = np.zeros((tangent_polys.get_num_members(), sd, tangent_polys.coeffs.shape[-1]))
 
     # Outer product of the tangent vectors with the quadratic edge polynomials.
     for i, (edge, dof) in enumerate(edge_dofs):
         tangent = ref_el.compute_edge_tangent(edge)
 
-        new_coeffs[i, :, :] = numpy.outer(tangent, tangent_polys.coeffs[i, :])
+        new_coeffs[i, :, :] = np.outer(tangent, tangent_polys.coeffs[i, :])
 
     bubble_set = polynomial_set.PolynomialSet(ref_el,
                                               order,

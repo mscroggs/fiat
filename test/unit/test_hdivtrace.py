@@ -106,7 +106,7 @@ def test_gradient_traceerror(dim, order, degree):
     """Ensure that the TraceError appears in the appropriate dict entries when
     attempting to tabulate certain orders of derivatives."""
     from FIAT import ufc_simplex, HDivTrace, make_quadrature
-    from FIAT.hdiv_trace import TraceError
+    from FIAT.elements.hdiv_trace import TraceError
 
     fiat_element = HDivTrace(ufc_simplex(dim), degree)
     pts = make_quadrature(ufc_simplex(dim - 1), degree + 1).pts
@@ -125,7 +125,7 @@ def test_cell_traceerror(dim, degree):
     """Ensure that the TraceError appears in all dict entries when deliberately
     attempting to tabulate the cell of a trace element."""
     from FIAT import ufc_simplex, HDivTrace, make_quadrature
-    from FIAT.hdiv_trace import TraceError
+    from FIAT.elements.hdiv_trace import TraceError
 
     fiat_element = HDivTrace(ufc_simplex(dim), degree)
     pts = make_quadrature(ufc_simplex(dim), 1).pts

@@ -5,7 +5,8 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, polynomial_set, dual_set, functional, P0
+from FIAT import finite_element, polynomial_set, dual_set, functional
+from .p0 import P0
 
 
 class DiscontinuousLagrangeDualSet(dual_set.DualSet):
@@ -51,6 +52,6 @@ class HigherOrderDiscontinuousLagrange(finite_element.CiarletElement):
 
 def DiscontinuousLagrange(ref_el, degree):
     if degree == 0:
-        return P0.P0(ref_el)
+        return P0(ref_el)
     else:
         return HigherOrderDiscontinuousLagrange(ref_el, degree)

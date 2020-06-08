@@ -21,7 +21,7 @@ import numpy
 import pytest
 
 from FIAT.reference_element import ufc_simplex
-from FIAT.bernstein import Bernstein
+from FIAT import Bernstein
 from FIAT.quadrature_schemes import create_quadrature
 
 

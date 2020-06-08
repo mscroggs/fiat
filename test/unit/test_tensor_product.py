@@ -23,13 +23,13 @@ import pytest
 import numpy as np
 
 from FIAT.reference_element import UFCInterval, UFCTriangle
-from FIAT.lagrange import Lagrange
-from FIAT.discontinuous_lagrange import DiscontinuousLagrange
-from FIAT.nedelec import Nedelec
-from FIAT.raviart_thomas import RaviartThomas
-from FIAT.tensor_product import TensorProductElement, FlattenedDimensions
+from FIAT import Lagrange
+from FIAT import DiscontinuousLagrange
+from FIAT import Nedelec
+from FIAT import RaviartThomas
+from FIAT.elements.tensor_product import TensorProductElement, FlattenedDimensions
 from FIAT.hdivcurl import Hdiv, Hcurl
-from FIAT.enriched import EnrichedElement
+from FIAT import EnrichedElement
 
 
 def test_TFE_1Dx1D_scalar():

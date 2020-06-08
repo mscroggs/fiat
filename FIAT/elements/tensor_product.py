@@ -6,7 +6,7 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-import numpy
+import numpy as np
 from FIAT.finite_element import FiniteElement
 from FIAT.reference_element import TensorProductCell, UFCQuadrilateral, UFCHexahedron, flatten_entities, compute_unflattening_map
 from FIAT.dual_set import DualSet
@@ -237,7 +237,7 @@ class TensorProductElement(FiniteElement):
 
         shape = tuple(len(c.get_topology()[d])
                       for c, d in zip(self.ref_el.cells, entity_dim))
-        idA, idB = numpy.unravel_index(entity_id, shape)
+        idA, idB = np.unravel_index(entity_id, shape)
 
         # Factor the entity argument to get entities of the component elements
         entityA_dim, entityB_dim = entity_dim
@@ -285,14 +285,14 @@ class TensorProductElement(FiniteElement):
                     # We now have temp[point][full basis function]
                     # Transpose this to get temp[bf][point],
                     # and we are done.
-                    temp = numpy.array([numpy.outer(
-                                       Atab[alpha[0:Asdim]][..., j],
-                                       Btab[alpha[Asdim:Asdim+Bsdim]][..., j])
-                        .ravel() for j in range(npoints)])
+                    temp = np.array([np.outer(
+                        Atab[alpha[0:Asdim]][..., j],
+                        Btab[alpha[Asdim:Asdim+Bsdim]][..., j]
+                    ).ravel() for j in range(npoints)])
                     result[alpha] = temp.transpose()
                 elif A_valuedim == 1 and B_valuedim == 0:
                     # similar to above, except A's basis functions
-                    # are now vector-valued. numpy.outer flattens the
+                    # are now vector-valued. np.outer flattens the
                     # array, so it's like taking the OP of
                     # f1_x, f1_y, f2_x, f2_y, ... with g1, g2, ...
                     # this gives us
@@ -303,10 +303,10 @@ class TensorProductElement(FiniteElement):
                     # gives us temp[point][x/y][full bf_i]
                     # finally, transpose the first and last indices
                     # to get temp[bf_i][x/y][point], and we are done.
-                    temp = numpy.array([numpy.outer(
-                                       Atab[alpha[0:Asdim]][..., j],
-                                       Btab[alpha[Asdim:Asdim+Bsdim]][..., j])
-                        for j in range(npoints)])
+                    temp = np.array([np.outer(
+                        Atab[alpha[0:Asdim]][..., j],
+                        Btab[alpha[Asdim:Asdim+Bsdim]][..., j]
+                    ) for j in range(npoints)])
                     assert temp.shape[1] % 2 == 0
                     temp2 = temp.reshape((temp.shape[0],
                                           temp.shape[1]//2,
@@ -318,12 +318,12 @@ class TensorProductElement(FiniteElement):
                     result[alpha] = temp2
                 elif A_valuedim == 0 and B_valuedim == 1:
                     # as above, with B's functions now vector-valued.
-                    # we now do... [numpy.outer ... for ...] gives
+                    # we now do... [np.outer ... for ...] gives
                     # temp[point][f_i][g1x,g1y,g2x,g2y,...].
                     # reshape to temp[point][f_i][g_j][x/y]
                     # flatten middle: temp[point][full bf_i][x/y]
                     # transpose to temp[bf_i][x/y][point]
-                    temp = numpy.array([numpy.outer(
+                    temp = np.array([np.outer(
                         Atab[alpha[0:Asdim]][..., j],
                         Btab[alpha[Asdim:Asdim+Bsdim]][..., j])
                         for j in range(len(Atab[alpha[0:Asdim]][0]))])

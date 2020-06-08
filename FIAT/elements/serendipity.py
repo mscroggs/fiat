@@ -9,7 +9,7 @@
 from sympy import symbols, legendre, Array, diff, lambdify
 import numpy as np
 from FIAT.finite_element import FiniteElement
-from FIAT.lagrange import Lagrange
+from .lagrange import Lagrange
 from FIAT.dual_set import make_entity_closure_ids
 from FIAT.polynomial_set import mis
 from FIAT.reference_element import (compute_unflattening_map,

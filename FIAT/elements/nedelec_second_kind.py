@@ -5,14 +5,14 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-import numpy
+import numpy as np
 
 from FIAT.finite_element import CiarletElement
 from FIAT.dual_set import DualSet
 from FIAT.polynomial_set import ONPolynomialSet
 from FIAT.functional import PointEdgeTangentEvaluation as Tangent
 from FIAT.functional import FrobeniusIntegralMoment as IntegralMoment
-from FIAT.raviart_thomas import RaviartThomas
+from .raviart_thomas import RaviartThomas
 from FIAT.quadrature import make_quadrature, UFCTetrahedronFaceQuadratureRule
 from FIAT.reference_element import UFCTetrahedron
 
@@ -149,11 +149,11 @@ class NedelecSecondKindDual(DualSet):
 
             # Map Phis -> phis (reference values to physical values)
             J = Q_face.jacobian()
-            scale = 1.0 / numpy.sqrt(numpy.linalg.det(numpy.dot(J.T, J)))
-            phis = numpy.ndarray((d, num_quad_points))
+            scale = 1.0 / np.sqrt(np.linalg.det(np.dot(J.T, J)))
+            phis = np.ndarray((d, num_quad_points))
             for i in range(num_rts):
                 for q in range(num_quad_points):
-                    phi_i_q = scale * numpy.dot(J, Phis[numpy.newaxis, i, :, q].T)
+                    phi_i_q = scale * np.dot(J, Phis[np.newaxis, i, :, q].T)
                     for j in range(d):
                         phis[j, q] = phi_i_q[j]
 

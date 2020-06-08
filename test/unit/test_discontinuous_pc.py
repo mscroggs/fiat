@@ -29,7 +29,7 @@ import numpy as np
 def test_basis_values(dim, degree):
     """Ensure that integrating a simple monomial produces the expected results."""
     from FIAT import ufc_cell, make_quadrature
-    from FIAT.discontinuous_pc import DPC
+    from FIAT import DPC
 
     cell = np.array([None, 'interval', 'quadrilateral', 'hexahedron'])
     s = ufc_cell(cell[dim])

@@ -8,7 +8,7 @@
 from FIAT import (polynomial_set, expansions, quadrature, dual_set,
                   finite_element, functional)
 from itertools import chain
-import numpy
+import numpy as np
 
 
 def NedelecSpace2D(ref_el, k):
@@ -33,17 +33,17 @@ def NedelecSpace2D(ref_el, k):
 
     Q = quadrature.make_quadrature(ref_el, 2 * k + 2)
 
-    Qpts = numpy.array(Q.get_points())
-    Qwts = numpy.array(Q.get_weights())
+    Qpts = np.array(Q.get_points())
+    Qwts = np.array(Q.get_weights())
 
     zero_index = tuple([0 for i in range(sd)])
 
     PkH_at_Qpts = PkH.tabulate(Qpts)[zero_index]
     Pkp1_at_Qpts = Pkp1.tabulate(Qpts)[zero_index]
 
-    PkH_crossx_coeffs = numpy.zeros((PkH.get_num_members(),
-                                     sd,
-                                     Pkp1.get_num_members()), "d")
+    PkH_crossx_coeffs = np.zeros((PkH.get_num_members(),
+                                  sd,
+                                  Pkp1.get_num_members()), "d")
 
     def rot_x_foo(a):
         if a == 0:
@@ -102,14 +102,14 @@ def NedelecSpace3D(ref_el, k):
 
     Q = quadrature.make_quadrature(ref_el, 2 * (k + 1))
 
-    Qpts = numpy.array(Q.get_points())
-    Qwts = numpy.array(Q.get_weights())
+    Qpts = np.array(Q.get_points())
+    Qwts = np.array(Q.get_weights())
 
     zero_index = tuple([0 for i in range(sd)])
 
-    PkCrossXcoeffs = numpy.zeros((vec_Pke.get_num_members(),
-                                  sd,
-                                  Pkp1.get_num_members()), "d")
+    PkCrossXcoeffs = np.zeros((vec_Pke.get_num_members(),
+                               sd,
+                               Pkp1.get_num_members()), "d")
 
     Pke_qpts = vec_Pke.tabulate(Qpts)[zero_index]
     Pkp1_at_Qpts = Pkp1.tabulate(Qpts)[zero_index]
@@ -119,7 +119,7 @@ def NedelecSpace3D(ref_el, k):
             qwts_cur_bf_val = (
                 Qpts[:, (j + 2) % 3] * Pke_qpts[i, (j + 1) % 3, :] -
                 Qpts[:, (j + 1) % 3] * Pke_qpts[i, (j + 2) % 3, :]) * Qwts
-            PkCrossXcoeffs[i, j, :] = numpy.dot(Pkp1_at_Qpts, qwts_cur_bf_val)
+            PkCrossXcoeffs[i, j, :] = np.dot(Pkp1_at_Qpts, qwts_cur_bf_val)
 #            for k in range( Pkp1.get_num_members() ):
 #                 PkCrossXcoeffs[i,j,k] = sum( Qwts * cur_bf_val * Pkp1_at_Qpts[k,:] )
 #                for l in range( len( Qpts ) ):

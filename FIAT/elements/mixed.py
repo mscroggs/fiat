@@ -6,7 +6,7 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-import numpy
+import numpy as np
 
 from operator import add
 from functools import partial
@@ -50,7 +50,7 @@ class MixedElement(FiniteElement):
         return len(self._elements)
 
     def value_shape(self):
-        return (sum(numpy.prod(e.value_shape(), dtype=int) for e in self.elements()), )
+        return (sum(np.prod(e.value_shape(), dtype=int) for e in self.elements()), )
 
     def mapping(self):
         return [m for e in self._elements for m in e.mapping()]
@@ -67,10 +67,10 @@ class MixedElement(FiniteElement):
         output = {}
 
         sub_dims = [0] + list(e.space_dimension() for e in self.elements())
-        sub_cmps = [0] + list(numpy.prod(e.value_shape(), dtype=int)
+        sub_cmps = [0] + list(np.prod(e.value_shape(), dtype=int)
                               for e in self.elements())
-        irange = numpy.cumsum(sub_dims)
-        crange = numpy.cumsum(sub_cmps)
+        irange = np.cumsum(sub_dims)
+        crange = np.cumsum(sub_cmps)
 
         for i, e in enumerate(self.elements()):
             table = e.tabulate(order, points, entity)
@@ -79,7 +79,7 @@ class MixedElement(FiniteElement):
                 try:
                     arr = output[d]
                 except KeyError:
-                    arr = numpy.zeros(shape, dtype=tab.dtype)
+                    arr = np.zeros(shape, dtype=tab.dtype)
                     output[d] = arr
 
                 ir = irange[i:i+2]
@@ -100,8 +100,8 @@ def concatenate_entity_dofs(ref_el, elements):
     all the elements."""
     entity_dofs = {dim: {i: [] for i in entities}
                    for dim, entities in ref_el.get_topology().items()}
-    offsets = numpy.cumsum([0] + list(e.space_dimension()
-                                      for e in elements), dtype=int)
+    offsets = np.cumsum([0] + list(e.space_dimension()
+                                   for e in elements), dtype=int)
     for i, d in enumerate(e.entity_dofs() for e in elements):
         for dim, dofs in d.items():
             for ent, off in dofs.items():

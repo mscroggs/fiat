@@ -11,7 +11,7 @@ from FIAT.finite_element import CiarletElement
 from FIAT.dual_set import DualSet
 from FIAT.polynomial_set import ONSymTensorPolynomialSet
 from FIAT.functional import PointwiseInnerProductEvaluation as InnerProduct
-import numpy
+import numpy as np
 
 
 class HellanHerrmannJohnsonDual(DualSet):
@@ -69,8 +69,8 @@ class HellanHerrmannJohnsonDual(DualSet):
         dofs = []
         dof_ids = {}
         pts = cell.make_points(2, 0, degree + 2)  # 2D trig #0
-        e1 = numpy.array([1.0, 0.0])              # euclidean basis 1
-        e2 = numpy.array([0.0, 1.0])              # euclidean basis 2
+        e1 = np.array([1.0, 0.0])              # euclidean basis 1
+        e2 = np.array([0.0, 1.0])              # euclidean basis 2
         basis = [(e1, e1), (e1, e2), (e2, e2)]    # basis for symmetric matrix
         for (v1, v2) in basis:
             dofs += [InnerProduct(cell, v1, v2, pt) for pt in pts]

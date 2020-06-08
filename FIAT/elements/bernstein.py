@@ -7,7 +7,7 @@
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
 import math
-import numpy
+import numpy as np
 
 from FIAT.finite_element import FiniteElement
 from FIAT.dual_set import DualSet
@@ -36,7 +36,7 @@ class BernsteinDualSet(DualSet):
         # Fill data structures
         nodes = []
         for i, ks in enumerate(kss):
-            vertices, = numpy.nonzero(ks)
+            vertices, = np.nonzero(ks)
             entity_dim, entity_i = inverse_topology[tuple(vertices)]
             entity_ids[entity_dim][entity_i].append(i)
 
@@ -83,12 +83,12 @@ class Bernstein(FiniteElement):
         cell_points = list(map(entity_transform, points))
 
         # Construct Cartesian to Barycentric coordinate mapping
-        vs = numpy.asarray(ref_el.get_vertices())
-        B2R = numpy.vstack([vs.T, numpy.ones(len(vs))])
-        R2B = numpy.linalg.inv(B2R)
+        vs = np.asarray(ref_el.get_vertices())
+        B2R = np.vstack([vs.T, np.ones(len(vs))])
+        R2B = np.linalg.inv(B2R)
 
-        B = numpy.hstack([cell_points,
-                          numpy.ones((len(cell_points), 1))]).dot(R2B.T)
+        B = np.hstack([cell_points,
+                       np.ones((len(cell_points), 1))]).dot(R2B.T)
 
         # Evaluate everything
         deg = self.degree()
@@ -100,8 +100,8 @@ class Bernstein(FiniteElement):
 
         # Rearrange result
         space_dim = self.space_dimension()
-        dtype = numpy.array(list(raw_result.values())).dtype
-        result = {alpha: numpy.zeros((space_dim, len(cell_points)), dtype=dtype)
+        dtype = np.array(list(raw_result.values())).dtype
+        result = {alpha: np.zeros((space_dim, len(cell_points)), dtype=dtype)
                   for o in range(order + 1)
                   for alpha in mis(dim, o)}
         for (alpha, i), vec in raw_result.items():
@@ -119,29 +119,29 @@ def bernstein_db(points, ks, alpha=None):
 
     :returns: array of Bernstein polynomial values at given points.
     """
-    points = numpy.asarray(points)
-    ks = numpy.array(tuple(ks))
+    points = np.asarray(points)
+    ks = np.array(tuple(ks))
 
     N, d_1 = points.shape
     assert d_1 == len(ks)
 
     if alpha is None:
-        alpha = numpy.zeros(d_1)
+        alpha = np.zeros(d_1)
     else:
-        alpha = numpy.array(tuple(alpha))
+        alpha = np.array(tuple(alpha))
         assert d_1 == len(alpha)
 
     ls = ks - alpha
     if any(k < 0 for k in ls):
-        return numpy.zeros(len(points))
+        return np.zeros(len(points))
     elif all(k == 0 for k in ls):
-        return numpy.ones(len(points))
+        return np.ones(len(points))
     else:
         # Calculate coefficient
         coeff = math.factorial(ks.sum())
         for k in ls:
             coeff //= math.factorial(k)
-        return coeff * numpy.prod(points**ls, axis=1)
+        return coeff * np.prod(points**ls, axis=1)
 
 
 def bernstein_Dx(points, ks, order, R2B):
@@ -157,7 +157,7 @@ def bernstein_Dx(points, ks, order, R2B):
     :returns: dictionary mapping from derivative tuples to arrays of
               Bernstein polynomial values at given points.
     """
-    points = numpy.asarray(points)
+    points = np.asarray(points)
     ks = tuple(ks)
 
     N, d_1 = points.shape
@@ -168,10 +168,10 @@ def bernstein_Dx(points, ks, order, R2B):
               for alpha in mis(d_1, order)}
 
     # Arrange derivative tensor (barycentric coordinates)
-    dtype = numpy.array(list(Db_map.values())).dtype
+    dtype = np.array(list(Db_map.values())).dtype
     Db_shape = (d_1,) * order
-    Db_tensor = numpy.empty(Db_shape + (N,), dtype=dtype)
-    for ds in numpy.ndindex(Db_shape):
+    Db_tensor = np.empty(Db_shape + (N,), dtype=dtype)
+    for ds in np.ndindex(Db_shape):
         alpha = [0] * d_1
         for d in ds:
             alpha[d] += 1

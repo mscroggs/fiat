@@ -6,8 +6,8 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT.lagrange import Lagrange
-from FIAT.restricted import RestrictedElement
+from .lagrange import Lagrange
+from .restricted import RestrictedElement
 from itertools import chain
 
 

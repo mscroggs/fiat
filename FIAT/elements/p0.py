@@ -11,15 +11,15 @@
 # under award number DE-FG02-04ER25650
 
 from FIAT import dual_set, functional, polynomial_set, finite_element
-import numpy
+import numpy as np
 
 
 class P0Dual(dual_set.DualSet):
     def __init__(self, ref_el):
         entity_ids = {}
         nodes = []
-        vs = numpy.array(ref_el.get_vertices())
-        bary = tuple(numpy.average(vs, 0))
+        vs = np.array(ref_el.get_vertices())
+        bary = tuple(np.average(vs, 0))
 
         nodes = [functional.PointEvaluation(ref_el, bary)]
         entity_ids = {}

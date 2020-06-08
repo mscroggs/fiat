@@ -6,38 +6,38 @@ import pkg_resources
 
 # Import finite element classes
 from FIAT.finite_element import FiniteElement, CiarletElement  # noqa: F401
-from FIAT.argyris import Argyris
-from FIAT.bernstein import Bernstein
-from FIAT.bell import Bell
-from FIAT.argyris import QuinticArgyris
-from FIAT.brezzi_douglas_marini import BrezziDouglasMarini
-from FIAT.brezzi_douglas_fortin_marini import BrezziDouglasFortinMarini
-from FIAT.discontinuous_lagrange import DiscontinuousLagrange
-from FIAT.discontinuous_taylor import DiscontinuousTaylor
-from FIAT.discontinuous_raviart_thomas import DiscontinuousRaviartThomas
-from FIAT.serendipity import Serendipity
-from FIAT.discontinuous_pc import DPC
-from FIAT.hermite import CubicHermite
-from FIAT.lagrange import Lagrange
-from FIAT.gauss_lobatto_legendre import GaussLobattoLegendre
-from FIAT.gauss_legendre import GaussLegendre
-from FIAT.gauss_radau import GaussRadau
-from FIAT.morley import Morley
-from FIAT.nedelec import Nedelec
-from FIAT.nedelec_second_kind import NedelecSecondKind
-from FIAT.P0 import P0
-from FIAT.raviart_thomas import RaviartThomas
-from FIAT.crouzeix_raviart import CrouzeixRaviart
-from FIAT.regge import Regge
-from FIAT.hellan_herrmann_johnson import HellanHerrmannJohnson
-from FIAT.bubble import Bubble, FacetBubble
-from FIAT.tensor_product import TensorProductElement
-from FIAT.enriched import EnrichedElement
-from FIAT.nodal_enriched import NodalEnrichedElement
-from FIAT.discontinuous import DiscontinuousElement
-from FIAT.hdiv_trace import HDivTrace
-from FIAT.mixed import MixedElement                       # noqa: F401
-from FIAT.restricted import RestrictedElement             # noqa: F401
+from FIAT.elements.argyris import Argyris
+from FIAT.elements.bernstein import Bernstein
+from FIAT.elements.bell import Bell
+from FIAT.elements.argyris import QuinticArgyris
+from FIAT.elements.brezzi_douglas_marini import BrezziDouglasMarini
+from FIAT.elements.brezzi_douglas_fortin_marini import BrezziDouglasFortinMarini
+from FIAT.elements.discontinuous_lagrange import DiscontinuousLagrange
+from FIAT.elements.discontinuous_taylor import DiscontinuousTaylor
+from FIAT.elements.discontinuous_raviart_thomas import DiscontinuousRaviartThomas
+from FIAT.elements.serendipity import Serendipity
+from FIAT.elements.discontinuous_pc import DPC
+from FIAT.elements.hermite import CubicHermite
+from FIAT.elements.lagrange import Lagrange
+from FIAT.elements.gauss_lobatto_legendre import GaussLobattoLegendre
+from FIAT.elements.gauss_legendre import GaussLegendre
+from FIAT.elements.gauss_radau import GaussRadau
+from FIAT.elements.morley import Morley
+from FIAT.elements.nedelec import Nedelec
+from FIAT.elements.nedelec_second_kind import NedelecSecondKind
+from FIAT.elements.p0 import P0
+from FIAT.elements.raviart_thomas import RaviartThomas
+from FIAT.elements.crouzeix_raviart import CrouzeixRaviart
+from FIAT.elements.regge import Regge
+from FIAT.elements.hellan_herrmann_johnson import HellanHerrmannJohnson
+from FIAT.elements.bubble import Bubble, FacetBubble
+from FIAT.elements.tensor_product import TensorProductElement
+from FIAT.elements.enriched import EnrichedElement
+from FIAT.elements.nodal_enriched import NodalEnrichedElement
+from FIAT.elements.discontinuous import DiscontinuousElement
+from FIAT.elements.hdiv_trace import HDivTrace
+from FIAT.elements.mixed import MixedElement                       # noqa: F401
+from FIAT.elements.restricted import RestrictedElement             # noqa: F401
 from FIAT.quadrature_element import QuadratureElement     # noqa: F401
 
 # Important functionality

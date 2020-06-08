@@ -6,7 +6,7 @@
 
 import numpy
 import types
-from FIAT.tensor_product import TensorProductElement
+from FIAT.elements.tensor_product import TensorProductElement
 from FIAT import functional
 
 
