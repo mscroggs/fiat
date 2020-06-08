@@ -3,6 +3,8 @@
 # This file is part of FIAT (https://www.fenicsproject.org)
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
+#
+# Modified by Matthew Scroggs (mws48@cam.ac.uk), 2020
 
 import numpy as np
 import types
@@ -10,48 +12,45 @@ from FIAT.elements.tensor_product import TensorProductElement
 from FIAT import functional
 
 
-def Hdiv(element):
-    if not isinstance(element, TensorProductElement):
-        raise NotImplementedError
+class HdivTensorProductElement(TensorProductElement):
+    def __init__(self, A, B, mapping):
+        super().__init__(A, B)
 
-    if element.A.get_formdegree() is None or element.B.get_formdegree() is None:
-        raise ValueError("form degree of sub-element was None (not set during initialisation), Hdiv cannot be done without this information")
-    formdegree = element.A.get_formdegree() + element.B.get_formdegree()
-    if formdegree != element.get_reference_element().get_spatial_dimension() - 1:
-        raise ValueError("Tried to use Hdiv on a non-(n-1)-form element")
+        if A.get_formdegree() is None or B.get_formdegree() is None:
+            raise ValueError("form degree of sub-element was None "
+                             "(not set during initialisation), Hdiv cannot be "
+                             "done without this information")
+        self.formdegree = A.get_formdegree() + B.get_formdegree()
+        if self.formdegree != self.get_reference_element().get_spatial_dimension() - 1:
+            raise ValueError("Tried to use Hdiv on a non-(n-1)-form element")
 
-    newelement = TensorProductElement(element.A, element.B)  # make a copy to return
+        self.parent_mapping = mapping
+        self._mapping = "contravariant piola"
 
-    # redefine value_shape()
+        # splat any PointEvaluation functionals.
+        # they become a nasty mix of internal and external component DOFs
+        if self.parent_mapping == "affine":
+            for i, node in enumerate(self.dual.nodes):
+                if isinstance(node, functional.PointEvaluation):
+                    self.dual.nodes[i] = functional.Functional(
+                        None, None, None, {}, "Undefined")
+
     def value_shape(self):
-        "Return the value shape of the finite element functions."
-        return (self.get_reference_element().get_spatial_dimension(),)
-    newelement.value_shape = types.MethodType(value_shape, newelement)
-
-    # store old _mapping
-    newelement._oldmapping = newelement._mapping
-
-    # redefine _mapping
-    newelement._mapping = "contravariant piola"
-
-    # store formdegree
-    newelement.formdegree = formdegree
-
-    # redefine tabulate
-    newelement.old_tabulate = newelement.tabulate
+        """Return the value shape of the finite element functions."""
+        return (self.get_reference_element().get_spatial_dimension(), )
 
     def tabulate(self, order, points, entity=None):
         """Return tabulated values of derivatives up to given order of
         basis functions at given points."""
 
         # don't duplicate what the old function does fine...
-        old_result = self.old_tabulate(order, points, entity)
+        old_result = super().tabulate(order, points, entity)
         new_result = {}
         sd = self.get_reference_element().get_spatial_dimension()
         for alpha in old_result.keys():
             temp_old = old_result[alpha]
 
-            if self._oldmapping == "affine":
+            if self.parent_mapping == "affine":
                 temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[1]), dtype=temp_old.dtype)
                 # both constituents affine, i.e., they were 0 forms or n-forms.
                 # to sum to n-1, we must have "0-form on an interval" crossed
@@ -71,28 +70,28 @@ def Hdiv(element):
                 else:
                     raise Exception("Hdiv affine/affine form degrees broke")
 
-            elif self._oldmapping == "contravariant piola":
+            elif self.parent_mapping == "contravariant piola":
                 temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
                 Asd = self.A.get_reference_element().get_spatial_dimension()
                 # one component is affine, one is contravariant piola
                 # the affine one must be an n-form, hence discontinuous
                 # this component/these components get zeroed out
-                if element.A.mapping()[0] == "contravariant piola":
+                if self.A.mapping()[0] == "contravariant piola":
                     # first element, so (x1, ..., xn, 0, ...)
                     temp[:, :Asd, :] = temp_old[:, :, :]
-                elif element.B.mapping()[0] == "contravariant piola":
+                elif self.B.mapping()[0] == "contravariant piola":
                     # second element, so (..., 0, x1, ..., xn)
                     temp[:, Asd:, :] = temp_old[:, :, :]
                 else:
                     raise ValueError("Hdiv contravariant piola couldn't find an existing ConPi subelement")
 
-            elif self._oldmapping == "covariant piola":
+            elif self.parent_mapping == "covariant piola":
                 temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
                 # one component is affine, one is covariant piola
                 # the affine one must be an n-form, hence discontinuous
                 # this component/these components get zeroed out
                 # the remaining part gets perped
-                if element.A.mapping()[0] == "covariant piola":
+                if self.A.mapping()[0] == "covariant piola":
                     Asd = self.A.get_reference_element().get_spatial_dimension()
                     if not Asd == 2:
                         raise ValueError("Must be 2d shape to automatically convert covariant to contravariant")
@@ -101,7 +100,7 @@ def Hdiv(element):
                     temp_perp[:, 0, :] = temp_old[:, 1, :]
                     temp_perp[:, 1, :] = -temp_old[:, 0, :]
                     temp[:, :Asd, :] = temp_perp[:, :, :]
-                elif element.B.mapping()[0] == "covariant piola":
+                elif self.B.mapping()[0] == "covariant piola":
                     Bsd = self.B.get_reference_element().get_spatial_dimension()
                     if not Bsd == 2:
                         raise ValueError("Must be 2d shape to automatically convert covariant to contravariant")
@@ -115,65 +114,49 @@ def Hdiv(element):
             new_result[alpha] = temp
         return new_result
 
-    newelement.tabulate = types.MethodType(tabulate, newelement)
 
-    # splat any PointEvaluation functionals.
-    # they become a nasty mix of internal and external component DOFs
-    if newelement._oldmapping == "affine":
-        oldnodes = newelement.dual.nodes
-        newnodes = []
-        for node in oldnodes:
-            if isinstance(node, functional.PointEvaluation):
-                newnodes.append(functional.Functional(None, None, None, {}, "Undefined"))
-            else:
-                newnodes.append(node)
-        newelement.dual.nodes = newnodes
-
-    return newelement
-
-
-def Hcurl(element):
+def Hdiv(element):
     if not isinstance(element, TensorProductElement):
         raise NotImplementedError
+    return HdivTensorProductElement(element.A, element.B, element._mapping)
 
-    if element.A.get_formdegree() is None or element.B.get_formdegree() is None:
-        raise ValueError("form degree of sub-element was None (not set during initialisation), Hcurl cannot be done without this information")
-    formdegree = element.A.get_formdegree() + element.B.get_formdegree()
-    if not (formdegree == 1):
-        raise ValueError("Tried to use Hcurl on a non-1-form element")
 
-    newelement = TensorProductElement(element.A, element.B)  # make a copy to return
+class HcurlTensorProductElement(TensorProductElement):
+    def __init__(self, A, B, mapping):
+        super().__init__(A, B)
+        if A.get_formdegree() is None or B.get_formdegree() is None:
+            raise ValueError("form degree of sub-element was None "
+                             "(not set during initialisation), Hcurl cannot be "
+                             "done without this information")
+        self.formdegree = A.get_formdegree() + B.get_formdegree()
+        if self.formdegree != 1:
+            raise ValueError("Tried to use Hcurl on a non-1-form element")
+        self.parent_mapping = mapping
+        self._mapping = "covariant piola"
+        # splat any PointEvaluation functionals.
+        # they become a nasty mix of internal and external component DOFs
+        if self.parent_mapping == "affine":
+            for i, node in enumerate(self.dual.nodes):
+                if isinstance(node, functional.PointEvaluation):
+                    self.dual.nodes[i] = functional.Functional(
+                        None, None, None, {}, "Undefined")
 
-    # redefine value_shape()
     def value_shape(self):
         "Return the value shape of the finite element functions."
-        return (self.get_reference_element().get_spatial_dimension(),)
-    newelement.value_shape = types.MethodType(value_shape, newelement)
-
-    # store old _mapping
-    newelement._oldmapping = newelement._mapping
-
-    # redefine _mapping
-    newelement._mapping = "covariant piola"
-
-    # store formdegree
-    newelement.formdegree = formdegree
-
-    # redefine tabulate
-    newelement.old_tabulate = newelement.tabulate
+        return (self.get_reference_element().get_spatial_dimension(), )
 
     def tabulate(self, order, points, entity=None):
         """Return tabulated values of derivatives up to given order of
         basis functions at given points."""
 
         # don't duplicate what the old function does fine...
-        old_result = self.old_tabulate(order, points, entity)
+        old_result = super().tabulate(order, points, entity)
         new_result = {}
         sd = self.get_reference_element().get_spatial_dimension()
         for alpha in old_result.keys():
             temp_old = old_result[alpha]
 
-            if self._oldmapping == "affine":
+            if self.parent_mapping == "affine":
                 temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[1]), dtype=temp_old.dtype)
                 # both constituents affine, i.e., they were 0 forms or n-forms.
                 # to sum to 1, we must have "1-form on an interval" crossed with
@@ -193,28 +176,28 @@ def Hcurl(element):
                 else:
                     raise Exception("Hcurl affine/affine form degrees broke")
 
-            elif self._oldmapping == "covariant piola":
+            elif self.parent_mapping == "covariant piola":
                 temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
                 Asd = self.A.get_reference_element().get_spatial_dimension()
                 # one component is affine, one is covariant piola
                 # the affine one must be an 0-form, hence continuous
                 # this component/these components get zeroed out
-                if element.A.mapping()[0] == "covariant piola":
+                if self.A.mapping()[0] == "covariant piola":
                     # first element, so (x1, ..., xn, 0, ...)
                     temp[:, :Asd, :] = temp_old[:, :, :]
-                elif element.B.mapping()[0] == "covariant piola":
+                elif self.B.mapping()[0] == "covariant piola":
                     # second element, so (..., 0, x1, ..., xn)
                     temp[:, Asd:, :] = temp_old[:, :, :]
                 else:
                     raise ValueError("Hdiv contravariant piola couldn't find an existing ConPi subelement")
 
-            elif self._oldmapping == "contravariant piola":
+            elif self.parent_mapping == "contravariant piola":
                 temp = np.zeros((temp_old.shape[0], sd, temp_old.shape[2]), dtype=temp_old.dtype)
                 # one component is affine, one is contravariant piola
                 # the affine one must be an 0-form, hence continuous
                 # this component/these components get zeroed out
                 # the remaining part gets perped
-                if element.A.mapping()[0] == "contravariant piola":
+                if self.A.mapping()[0] == "contravariant piola":
                     Asd = self.A.get_reference_element().get_spatial_dimension()
                     if not Asd == 2:
                         raise ValueError("Must be 2d shape to automatically convert contravariant to covariant")
@@ -223,7 +206,7 @@ def Hcurl(element):
                     temp_perp[:, 0, :] = -temp_old[:, 1, :]
                     temp_perp[:, 1, :] = temp_old[:, 0, :]
                     temp[:, :Asd, :] = temp_perp[:, :, :]
-                elif element.B.mapping()[0] == "contravariant piola":
+                elif self.B.mapping()[0] == "contravariant piola":
                     Bsd = self.B.get_reference_element().get_spatial_dimension()
                     if not Bsd == 2:
                         raise ValueError("Must be 2d shape to automatically convert contravariant to covariant")
@@ -237,18 +220,8 @@ def Hcurl(element):
             new_result[alpha] = temp
         return new_result
 
-    newelement.tabulate = types.MethodType(tabulate, newelement)
 
-    # splat any PointEvaluation functionals.
-    # they become a nasty mix of internal and external component DOFs
-    if newelement._oldmapping == "affine":
-        oldnodes = newelement.dual.nodes
-        newnodes = []
-        for node in oldnodes:
-            if isinstance(node, functional.PointEvaluation):
-                newnodes.append(functional.Functional(None, None, None, {}, "Undefined"))
-            else:
-                newnodes.append(node)
-        newelement.dual.nodes = newnodes
-
-    return newelement
+def Hcurl(element):
+    if not isinstance(element, TensorProductElement):
+        raise NotImplementedError
+    return HcurlTensorProductElement(element.A, element.B, element._mapping)
