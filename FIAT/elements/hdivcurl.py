@@ -7,7 +7,6 @@
 # Modified by Matthew Scroggs (mws48@cam.ac.uk), 2020
 
 import numpy as np
-import types
 from FIAT.elements.tensor_product import TensorProductElement
 from FIAT import functional
 
