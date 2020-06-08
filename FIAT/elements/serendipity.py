@@ -11,7 +11,7 @@ import numpy as np
 from FIAT.finite_element import FiniteElement
 from .lagrange import Lagrange
 from FIAT.dual_set import make_entity_closure_ids
-from FIAT.polynomial_set import mis
+from FIAT.helpers import mis
 from FIAT.reference_element import (compute_unflattening_map,
                                     flatten_reference_cube)
 

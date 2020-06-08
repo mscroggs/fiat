@@ -6,9 +6,10 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, polynomial_set, dual_set, functional, quadrature
+from FIAT import finite_element, dual_set, functional, quadrature
+from FIAT.polynomials import ONPolynomialSet
 from .p0 import P0
-from FIAT.polynomial_set import mis
+from FIAT.helpers import mis
 import numpy as np
 
 
@@ -44,7 +45,7 @@ class HigherOrderDiscontinuousTaylor(finite_element.CiarletElement):
     """The discontinuous Taylor finite element. Use a Taylor basis for DG."""
 
     def __init__(self, ref_el, degree):
-        poly_set = polynomial_set.ONPolynomialSet(ref_el, degree)
+        poly_set = ONPolynomialSet(ref_el, degree)
         dual = DiscontinuousTaylorDualSet(ref_el, degree)
         formdegree = ref_el.get_spatial_dimension()  # n-form
         super(HigherOrderDiscontinuousTaylor, self).__init__(poly_set, dual, degree, formdegree)

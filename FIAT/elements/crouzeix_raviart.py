@@ -9,7 +9,8 @@
 #
 # Last changed: 2010-01-28
 
-from FIAT import finite_element, polynomial_set, dual_set, functional
+from FIAT.polynomials import ONPolynomialSet
+from FIAT import finite_element, dual_set, functional
 
 
 def _initialize_entity_ids(topology):
@@ -65,6 +66,6 @@ class CrouzeixRaviart(finite_element.CiarletElement):
 
         # Construct polynomial spaces, dual basis and initialize
         # FiniteElement
-        space = polynomial_set.ONPolynomialSet(cell, 1)
+        space = ONPolynomialSet(cell, 1)
         dual = CrouzeixRaviartDualSet(cell, 1)
         super(CrouzeixRaviart, self).__init__(space, dual, 1)

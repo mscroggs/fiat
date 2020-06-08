@@ -6,7 +6,8 @@
 #
 # Modified by David A. Ham (david.ham@imperial.ac.uk), 2018
 
-from FIAT import finite_element, polynomial_set, dual_set, functional
+from FIAT import finite_element, dual_set, functional
+from FIAT.polynomials import ONPolynomialSet
 from FIAT.reference_element import (Point,
                                     DefaultLine,
                                     UFCInterval,
@@ -29,7 +30,7 @@ hypercube_simplex_map = {Point(): Point(),
 class DPC0(finite_element.CiarletElement):
     def __init__(self, ref_el):
         flat_el = flatten_reference_cube(ref_el)
-        poly_set = polynomial_set.ONPolynomialSet(hypercube_simplex_map[flat_el], 0)
+        poly_set = ONPolynomialSet(hypercube_simplex_map[flat_el], 0)
         dual = P0Dual(ref_el)
         degree = 0
         formdegree = ref_el.get_spatial_dimension()  # n-form
@@ -96,7 +97,7 @@ class HigherOrderDPC(finite_element.CiarletElement):
 
     def __init__(self, ref_el, degree):
         flat_el = flatten_reference_cube(ref_el)
-        poly_set = polynomial_set.ONPolynomialSet(hypercube_simplex_map[flat_el], degree)
+        poly_set = ONPolynomialSet(hypercube_simplex_map[flat_el], degree)
         dual = DPCDualSet(ref_el, flat_el, degree)
         formdegree = flat_el.get_spatial_dimension()  # n-form
         super(HigherOrderDPC, self).__init__(poly_set=poly_set,

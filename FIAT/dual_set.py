@@ -9,7 +9,7 @@
 import numpy as np
 import collections
 
-from FIAT import polynomial_set
+from FIAT.polynomials import ONPolynomialSet
 
 
 class DualSet(object):
@@ -119,7 +119,7 @@ class DualSet(object):
             # It's easiest/most efficient to get derivatives of the
             # expansion set through the polynomial set interface.
             # This is creating a short-lived set to do just this.
-            expansion = polynomial_set.ONPolynomialSet(self.ref_el, ed)
+            expansion = ONPolynomialSet(self.ref_el, ed)
             dexpansion_values = expansion.tabulate(dpts, max_deriv_order)
 
             for j, pt in enumerate(dpts):

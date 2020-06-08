@@ -11,7 +11,7 @@ import numpy as np
 import math
 import sympy
 from FIAT import reference_element
-from FIAT import jacobi
+from . import jacobi
 
 
 def jrc(a, b, n):

@@ -5,8 +5,8 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import (finite_element, quadrature, functional, dual_set,
-                  polynomial_set)
+from FIAT import finite_element, quadrature, functional, dual_set
+from FIAT.polynomials import ONPolynomialSet
 from . import nedelec
 
 
@@ -80,7 +80,7 @@ class BrezziDouglasMarini(finite_element.CiarletElement):
             raise Exception("BDM_k elements only valid for k >= 1")
 
         sd = ref_el.get_spatial_dimension()
-        poly_set = polynomial_set.ONPolynomialSet(ref_el, degree, (sd, ))
+        poly_set = ONPolynomialSet(ref_el, degree, (sd, ))
         dual = BDMDualSet(ref_el, degree)
         formdegree = sd - 1  # (n-1)-form
         super(BrezziDouglasMarini, self).__init__(poly_set, dual, degree, formdegree,

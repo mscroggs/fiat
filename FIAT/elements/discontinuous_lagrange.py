@@ -5,7 +5,8 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, polynomial_set, dual_set, functional
+from FIAT import finite_element, dual_set, functional
+from FIAT.polynomials import ONPolynomialSet
 from .p0 import P0
 
 
@@ -44,7 +45,7 @@ class HigherOrderDiscontinuousLagrange(finite_element.CiarletElement):
     """The discontinuous Lagrange finite element.  It is what it is."""
 
     def __init__(self, ref_el, degree):
-        poly_set = polynomial_set.ONPolynomialSet(ref_el, degree)
+        poly_set = ONPolynomialSet(ref_el, degree)
         dual = DiscontinuousLagrangeDualSet(ref_el, degree)
         formdegree = ref_el.get_spatial_dimension()  # n-form
         super(HigherOrderDiscontinuousLagrange, self).__init__(poly_set, dual, degree, formdegree)

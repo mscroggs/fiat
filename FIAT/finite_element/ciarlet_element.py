@@ -10,7 +10,7 @@
 
 import numpy as np
 
-from FIAT.polynomial_set import PolynomialSet
+from FIAT.polynomials import PolynomialSet
 from FIAT.quadrature.quadrature_schemes import create_quadrature
 from .finite_element import FiniteElement
 

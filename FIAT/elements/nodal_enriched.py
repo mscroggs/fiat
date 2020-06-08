@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from FIAT.polynomial_set import PolynomialSet
+from FIAT.polynomials import PolynomialSet
 from FIAT.dual_set import DualSet
 from FIAT.finite_element import CiarletElement
 

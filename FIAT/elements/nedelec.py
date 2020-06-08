@@ -5,8 +5,10 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import (polynomial_set, expansions, quadrature, dual_set,
-                  finite_element, functional)
+from FIAT import quadrature, dual_set, finite_element, functional
+from FIAT.polynomials import (ONPolynomialSet, PolynomialSet,
+                              polynomial_set_union_normalized,
+                              expansions)
 from itertools import chain
 import numpy as np
 
@@ -18,7 +20,7 @@ def NedelecSpace2D(ref_el, k):
     if sd != 2:
         raise Exception("NedelecSpace2D requires 2d reference element")
 
-    vec_Pkp1 = polynomial_set.ONPolynomialSet(ref_el, k + 1, (sd,))
+    vec_Pkp1 = ONPolynomialSet(ref_el, k + 1, (sd,))
 
     dimPkp1 = expansions.polynomial_dimension(ref_el, k + 1)
     dimPk = expansions.polynomial_dimension(ref_el, k)
@@ -28,7 +30,7 @@ def NedelecSpace2D(ref_el, k):
                                   for i in range(sd))))
     vec_Pk_from_Pkp1 = vec_Pkp1.take(vec_Pk_indices)
 
-    Pkp1 = polynomial_set.ONPolynomialSet(ref_el, k + 1)
+    Pkp1 = ONPolynomialSet(ref_el, k + 1)
     PkH = Pkp1.take(list(range(dimPkm1, dimPk)))
 
     Q = quadrature.make_quadrature(ref_el, 2 * k + 2)
@@ -63,15 +65,12 @@ def NedelecSpace2D(ref_el, k):
 #                                                * Pkp1_at_Qpts[k,l] \
 #                                                * sign
 
-    PkHcrossx = polynomial_set.PolynomialSet(ref_el,
-                                             k + 1,
-                                             k + 1,
-                                             vec_Pkp1.get_expansion_set(),
-                                             PkH_crossx_coeffs,
-                                             vec_Pkp1.get_dmats())
+    PkHcrossx = PolynomialSet(ref_el, k + 1, k + 1,
+                              vec_Pkp1.get_expansion_set(),
+                              PkH_crossx_coeffs,
+                              vec_Pkp1.get_dmats())
 
-    return polynomial_set.polynomial_set_union_normalized(vec_Pk_from_Pkp1,
-                                                          PkHcrossx)
+    return polynomial_set_union_normalized(vec_Pk_from_Pkp1, PkHcrossx)
 
 
 def NedelecSpace3D(ref_el, k):
@@ -80,7 +79,7 @@ def NedelecSpace3D(ref_el, k):
     if sd != 3:
         raise Exception("NedelecSpace3D requires 3d reference element")
 
-    vec_Pkp1 = polynomial_set.ONPolynomialSet(ref_el, k + 1, (sd,))
+    vec_Pkp1 = ONPolynomialSet(ref_el, k + 1, (sd,))
 
     dimPkp1 = expansions.polynomial_dimension(ref_el, k + 1)
     dimPk = expansions.polynomial_dimension(ref_el, k)
@@ -98,7 +97,7 @@ def NedelecSpace3D(ref_el, k):
 
     vec_Pke = vec_Pkp1.take(vec_Pke_indices)
 
-    Pkp1 = polynomial_set.ONPolynomialSet(ref_el, k + 1)
+    Pkp1 = ONPolynomialSet(ref_el, k + 1)
 
     Q = quadrature.make_quadrature(ref_el, 2 * (k + 1))
 
@@ -131,13 +130,11 @@ def NedelecSpace3D(ref_el, k):
 #                                             * cur_bf_val \
 #                                             * Pkp1_at_Qpts[k,l]
 
-    PkCrossX = polynomial_set.PolynomialSet(ref_el,
-                                            k + 1,
-                                            k + 1,
-                                            vec_Pkp1.get_expansion_set(),
-                                            PkCrossXcoeffs,
-                                            vec_Pkp1.get_dmats())
-    return polynomial_set.polynomial_set_union_normalized(vec_Pk, PkCrossX)
+    PkCrossX = PolynomialSet(ref_el, k + 1, k + 1,
+                             vec_Pkp1.get_expansion_set(),
+                             PkCrossXcoeffs,
+                             vec_Pkp1.get_dmats())
+    return polynomial_set_union_normalized(vec_Pk, PkCrossX)
 
 
 class NedelecDual2D(dual_set.DualSet):
@@ -166,7 +163,7 @@ class NedelecDual2D(dual_set.DualSet):
         if degree > 0:
             Q = quadrature.make_quadrature(ref_el, 2 * (degree + 1))
             qpts = Q.get_points()
-            Pkm1 = polynomial_set.ONPolynomialSet(ref_el, degree - 1)
+            Pkm1 = ONPolynomialSet(ref_el, degree - 1)
             zero_index = tuple([0 for i in range(sd)])
             Pkm1_at_qpts = Pkm1.tabulate(qpts)[zero_index]
 
@@ -237,7 +234,7 @@ class NedelecDual3D(dual_set.DualSet):
         if degree > 1:  # internal moments
             Q = quadrature.make_quadrature(ref_el, 2 * (degree + 1))
             qpts = Q.get_points()
-            Pkm2 = polynomial_set.ONPolynomialSet(ref_el, degree - 2)
+            Pkm2 = ONPolynomialSet(ref_el, degree - 2)
             zero_index = tuple([0 for i in range(sd)])
             Pkm2_at_qpts = Pkm2.tabulate(qpts)[zero_index]
 

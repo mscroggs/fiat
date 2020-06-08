@@ -9,7 +9,7 @@ from .discontinuous_lagrange import DiscontinuousLagrange
 from FIAT.dual_set import DualSet
 from FIAT.finite_element import FiniteElement
 from FIAT.functional import PointEvaluation
-from FIAT.polynomial_set import mis
+from FIAT.helpers import mis
 from FIAT.reference_element import (ufc_simplex, POINT,
                                     LINE, QUADRILATERAL,
                                     TRIANGLE, TETRAHEDRON,

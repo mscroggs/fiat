@@ -9,7 +9,7 @@
 
 from FIAT.finite_element import CiarletElement
 from FIAT.dual_set import DualSet
-from FIAT.polynomial_set import ONSymTensorPolynomialSet
+from FIAT.polynomials import ONSymTensorPolynomialSet
 from FIAT.functional import PointwiseInnerProductEvaluation as InnerProduct
 import numpy as np
 

@@ -4,7 +4,8 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, polynomial_set, dual_set, functional
+from FIAT import finite_element, dual_set, functional
+from FIAT.polynomials import ONPolynomialSet
 from FIAT.reference_element import TRIANGLE
 
 
@@ -52,6 +53,6 @@ class Morley(finite_element.CiarletElement):
     """The Morley finite element."""
 
     def __init__(self, ref_el):
-        poly_set = polynomial_set.ONPolynomialSet(ref_el, 2)
+        poly_set = ONPolynomialSet(ref_el, 2)
         dual = MorleyDualSet(ref_el)
         super(Morley, self).__init__(poly_set, dual, 2)

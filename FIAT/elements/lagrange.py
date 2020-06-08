@@ -5,7 +5,8 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, polynomial_set, dual_set, functional
+from FIAT import finite_element, dual_set, functional
+from FIAT.polynomials import ONPolynomialSet
 
 
 class LagrangeDualSet(dual_set.DualSet):
@@ -40,7 +41,7 @@ class Lagrange(finite_element.CiarletElement):
     """The Lagrange finite element.  It is what it is."""
 
     def __init__(self, ref_el, degree):
-        poly_set = polynomial_set.ONPolynomialSet(ref_el, degree)
+        poly_set = ONPolynomialSet(ref_el, degree)
         dual = LagrangeDualSet(ref_el, degree)
         formdegree = 0  # 0-form
         super(Lagrange, self).__init__(poly_set, dual, degree, formdegree)

@@ -8,7 +8,8 @@
 
 import sympy
 import numpy as np
-from .functional import Functional, index_iterator
+from .functional import Functional
+from FIAT.helpers import index_iterator
 
 
 class PointEvaluation(Functional):

@@ -5,8 +5,10 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import (expansions, polynomial_set, quadrature, dual_set,
-                  finite_element, functional)
+from FIAT import quadrature, dual_set, finite_element, functional
+from FIAT.polynomials import (ONPolynomialSet, PolynomialSet,
+                              polynomial_set_union_normalized,
+                              expansions)
 import numpy as np
 from itertools import chain
 
@@ -16,7 +18,7 @@ def RTSpace(ref_el, deg):
     (P_k)^d + P_k x"""
     sd = ref_el.get_spatial_dimension()
 
-    vec_Pkp1 = polynomial_set.ONPolynomialSet(ref_el, deg + 1, (sd,))
+    vec_Pkp1 = ONPolynomialSet(ref_el, deg + 1, (sd,))
 
     dimPkp1 = expansions.polynomial_dimension(ref_el, deg + 1)
     dimPk = expansions.polynomial_dimension(ref_el, deg)
@@ -26,7 +28,7 @@ def RTSpace(ref_el, deg):
                                   for i in range(sd))))
     vec_Pk_from_Pkp1 = vec_Pkp1.take(vec_Pk_indices)
 
-    Pkp1 = polynomial_set.ONPolynomialSet(ref_el, deg + 1)
+    Pkp1 = ONPolynomialSet(ref_el, deg + 1)
     PkH = Pkp1.take(list(range(dimPkm1, dimPk)))
 
     Q = quadrature.make_quadrature(ref_el, 2 * deg + 2)
@@ -50,14 +52,11 @@ def RTSpace(ref_el, deg):
             fooij = PkH_at_Qpts[i, :] * Qpts[:, j] * Qwts
             PkHx_coeffs[i, j, :] = np.dot(Pkp1_at_Qpts, fooij)
 
-    PkHx = polynomial_set.PolynomialSet(ref_el,
-                                        deg,
-                                        deg + 1,
-                                        vec_Pkp1.get_expansion_set(),
-                                        PkHx_coeffs,
-                                        vec_Pkp1.get_dmats())
+    PkHx = PolynomialSet(ref_el, deg, deg + 1,
+                         vec_Pkp1.get_expansion_set(),
+                         PkHx_coeffs, vec_Pkp1.get_dmats())
 
-    return polynomial_set.polynomial_set_union_normalized(vec_Pk_from_Pkp1, PkHx)
+    return polynomial_set_union_normalized(vec_Pk_from_Pkp1, PkHx)
 
 
 class RTDualSet(dual_set.DualSet):
@@ -91,7 +90,7 @@ class RTDualSet(dual_set.DualSet):
 
             # Q = quadrature.make_quadrature(ref_el, 2 * ( degree + 1 ))
             # qpts = Q.get_points()
-            # Pkm1 = polynomial_set.ONPolynomialSet(ref_el, degree - 1)
+            # Pkm1 = ONPolynomialSet(ref_el, degree - 1)
             # zero_index = tuple([0 for i in range(sd)])
             # Pkm1_at_qpts = Pkm1.tabulate(qpts)[zero_index]
 

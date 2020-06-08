@@ -6,7 +6,8 @@
 #
 # Written by David A. Ham (david.ham@imperial.ac.uk), 2015
 
-from FIAT import finite_element, polynomial_set, dual_set, functional, quadrature
+from FIAT import finite_element, dual_set, functional, quadrature
+from FIAT.polynomials import ONPolynomialSet
 from FIAT.reference_element import LINE
 
 
@@ -27,7 +28,7 @@ class GaussLobattoLegendre(finite_element.CiarletElement):
     def __init__(self, ref_el, degree):
         if ref_el.shape != LINE:
             raise ValueError("Gauss-Lobatto-Legendre elements are only defined in one dimension.")
-        poly_set = polynomial_set.ONPolynomialSet(ref_el, degree)
+        poly_set = ONPolynomialSet(ref_el, degree)
         dual = GaussLobattoLegendreDualSet(ref_el, degree)
         formdegree = 0  # 0-form
         super(GaussLobattoLegendre, self).__init__(poly_set, dual, degree, formdegree)

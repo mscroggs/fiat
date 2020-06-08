@@ -10,7 +10,7 @@ import numpy as np
 from FIAT.finite_element import FiniteElement
 from FIAT.reference_element import TensorProductCell, UFCQuadrilateral, UFCHexahedron, flatten_entities, compute_unflattening_map
 from FIAT.dual_set import DualSet
-from FIAT.polynomial_set import mis
+from FIAT.helpers import mis
 from FIAT import dual_set
 from FIAT import functional
 

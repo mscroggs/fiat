@@ -11,7 +11,8 @@ import itertools
 import math
 import numpy as np
 
-from FIAT import reference_element, expansions, jacobi, orthopoly
+from FIAT import reference_element
+from FIAT.polynomials import expansions, jacobi, orthopoly
 
 
 class QuadratureRule(object):

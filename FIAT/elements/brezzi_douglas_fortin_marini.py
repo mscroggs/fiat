@@ -1,5 +1,6 @@
-from FIAT import (finite_element, functional, dual_set,
-                  polynomial_set)
+from FIAT import finite_element, functional, dual_set
+from FIAT.polynomials import (ONPolynomialSet, PolynomialSet,
+                              polynomial_set_union_normalized)
 from . import lagrange
 
 import numpy as np
@@ -71,7 +72,7 @@ def BDFMSpace(ref_el, order):
     # Linear vector valued space. Since the embedding degree of this element
     # is 2, this is implemented by taking the quadratic space and selecting
     # the linear polynomials.
-    vec_poly_set = polynomial_set.ONPolynomialSet(ref_el, order, (sd,))
+    vec_poly_set = ONPolynomialSet(ref_el, order, (sd,))
     # Linears are the first three polynomials in each dimension.
     vec_poly_set = vec_poly_set.take([0, 1, 2, 6, 7, 8])
 
@@ -92,14 +93,11 @@ def BDFMSpace(ref_el, order):
 
         new_coeffs[i, :, :] = np.outer(tangent, tangent_polys.coeffs[i, :])
 
-    bubble_set = polynomial_set.PolynomialSet(ref_el,
-                                              order,
-                                              order,
-                                              vec_poly_set.get_expansion_set(),
-                                              new_coeffs,
-                                              vec_poly_set.get_dmats())
+    bubble_set = PolynomialSet(ref_el, order, order,
+                               vec_poly_set.get_expansion_set(), new_coeffs,
+                               vec_poly_set.get_dmats())
 
-    element_set = polynomial_set.polynomial_set_union_normalized(bubble_set, vec_poly_set)
+    element_set = polynomial_set_union_normalized(bubble_set, vec_poly_set)
     return element_set
 
 

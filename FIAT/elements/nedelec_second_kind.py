@@ -9,7 +9,7 @@ import numpy as np
 
 from FIAT.finite_element import CiarletElement
 from FIAT.dual_set import DualSet
-from FIAT.polynomial_set import ONPolynomialSet
+from FIAT.polynomials import ONPolynomialSet
 from FIAT.functional import PointEdgeTangentEvaluation as Tangent
 from FIAT.functional import FrobeniusIntegralMoment as IntegralMoment
 from .raviart_thomas import RaviartThomas

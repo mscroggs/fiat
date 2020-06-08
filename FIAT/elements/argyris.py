@@ -4,7 +4,8 @@
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
 
-from FIAT import finite_element, polynomial_set, dual_set, functional
+from FIAT import finite_element, dual_set, functional
+from FIAT.polynomials import ONPolynomialSet
 from FIAT.reference_element import TRIANGLE
 
 
@@ -131,7 +132,7 @@ class Argyris(finite_element.CiarletElement):
     """The Argyris finite element."""
 
     def __init__(self, ref_el, degree):
-        poly_set = polynomial_set.ONPolynomialSet(ref_el, degree)
+        poly_set = ONPolynomialSet(ref_el, degree)
         dual = ArgyrisDualSet(ref_el, degree)
         super(Argyris, self).__init__(poly_set, dual, degree)
 
@@ -140,6 +141,6 @@ class QuinticArgyris(finite_element.CiarletElement):
     """The Argyris finite element."""
 
     def __init__(self, ref_el):
-        poly_set = polynomial_set.ONPolynomialSet(ref_el, 5)
+        poly_set = ONPolynomialSet(ref_el, 5)
         dual = QuinticArgyrisDualSet(ref_el)
         super(QuinticArgyris, self).__init__(poly_set, dual, 5)

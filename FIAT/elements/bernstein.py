@@ -11,7 +11,7 @@ import numpy as np
 
 from FIAT.finite_element import FiniteElement
 from FIAT.dual_set import DualSet
-from FIAT.polynomial_set import mis
+from FIAT.helpers import mis
 
 
 class BernsteinDualSet(DualSet):

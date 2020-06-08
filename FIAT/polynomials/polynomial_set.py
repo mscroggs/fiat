@@ -16,20 +16,8 @@
 # an entire set of polynomials)
 
 import numpy as np
-from FIAT import expansions
-from FIAT.helpers import index_iterator
-
-
-def mis(m, n):
-    """Returns all m-tuples of nonnegative integers that sum up to n."""
-    if m == 1:
-        return [(n,)]
-    elif n == 0:
-        return [tuple([0] * m)]
-    else:
-        return [tuple([n - i] + list(foo))
-                for i in range(n + 1)
-                for foo in mis(m - 1, i)]
+from . import expansions
+from FIAT.helpers import index_iterator, mis
 
 
 # We order coeffs by C_{i,j,k}

@@ -28,5 +28,5 @@ setup(name="fenics-fiat",
       license="LGPL v3 or later",
       packages=["FIAT", "FIAT.reference_element", "FIAT.elements",
                 "FIAT.quadrature", "FIAT.functional", "FIAT.helpers",
-                "FIAT.finite_element"],
+                "FIAT.finite_element", "FIAT.polynomials"],
       install_requires=["numpy", "sympy"])
