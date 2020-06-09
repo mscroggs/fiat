@@ -5,6 +5,8 @@
 # This file is part of FIAT (https://www.fenicsproject.org)
 #
 # SPDX-License-Identifier:    LGPL-3.0-or-later
+#
+# Modified by Matthew Scroggs (mws48@cam.ac.uk), 2020
 
 # functionals require:
 # - a degree of accuracy (-1 indicates that it works for all functions
@@ -19,31 +21,37 @@ from FIAT.polynomials import ONPolynomialSet
 
 
 class Functional(object):
-    r"""Abstract class representing a linear functional.
+    """A linear functional.
     All FIAT functionals are discrete in the sense that
     they are written as a weighted sum of (derivatives of components of) their
     argument evaluated at particular points.
-
-    :arg ref_el: a :class:`Cell`
-    :arg target_shape: a tuple indicating the value shape of functions on
-         the functional operates (e.g. if the function eats 2-vectors
-         then target_shape is (2,) and if it eats scalars then
-         target_shape is ()
-    :arg pt_dict: A dict mapping points to lists of information about
-         how the functional is evaluated.  Each entry in the list takes
-         the form of a tuple (wt, comp) so that (at least if the
-         deriv_dict argument is empty), the functional takes the form
-         :math:`\ell(f) = \sum_{q=1}^{N_q} \sum_{k=1}^{K_q} w^q_k f_{c_k}(x_q)`
-         where :math:`f_{c_k}` indicates a particular vector or tensor component
-    :arg deriv_dict: A dict that is similar to `pt_dict`, although the entries
-         of each list are tuples (wt, alpha, comp) with alpha a tuple
-         of nonnegative integers corresponding to the order of partial
-         differentiation in each spatial direction.
-    :arg functional_type: a string labeling the kind of functional
-         this is.
     """
     def __init__(self, ref_el, target_shape, pt_dict, deriv_dict,
                  functional_type):
+        """
+        Parameters
+        ----------
+        ref_el : FIAT.reference_element.Cell
+            The reference element.
+        target_shape : tuple
+            A tuple indicating the value shape of functions on the functional
+            operates (e.g. if the function eats 2-vectors then target_shape is
+            (2,) and if it eats scalars then target_shape is ().
+        pt_dict : dict
+            A dictionary mapping points to lists of information about how the
+            functional is evaluated.  Each entry in the list is a tuple
+            (wt, comp) so that (at least if the deriv_dict argument is empty),
+            the functional takes the form
+            :math:`\ell(f) = \sum_{q=1}^{N_q} \sum_{k=1}^{K_q} w^q_k f_{c_k}(x_q)`
+            where :math:`f_{c_k}` indicates a particular vector or tensor component.
+        deriv_dict : dict
+            A dictionary that is similar to pt_dict, although the entries of
+            each list are tuples (wt, alpha, comp) with alpha a tuple of
+            nonnegative integers corresponding to the order of partial
+            differentiation in each spatial direction.
+        functional_type: str
+            A label for the kind of functional this is.
+        """
         self.ref_el = ref_el
         self.target_shape = target_shape
         self.pt_dict = pt_dict
@@ -57,20 +65,16 @@ class Functional(object):
             self.max_deriv_order = 0
 
     def evaluate(self, f):
-        """Obsolete and broken functional evaluation.
-
-        To evaluate the functional, call it on the target function:
-
-          functional(function)
-        """
-        raise AttributeError("To evaluate the functional just call it on a function.")
+        """Evaluate the functional."""
+        return self(f)
 
     def __call__(self, fn):
-        raise NotImplementedError("Evaluation is not yet implemented for %s" % type(self))
+        raise NotImplementedError("Evaluation is not yet implemented "
+                                  "for %s" % type(self))
 
     def get_point_dict(self):
-        """Returns the functional information, which is a dictionary
-        mapping each point in the support of the functional to a list
+        """Returns the functional's point dictionary, which maps
+        each point in the support of the functional to a list
         of pairs containing the weight and component."""
         return self.pt_dict
 
@@ -80,22 +84,14 @@ class Functional(object):
 
     def get_type_tag(self):
         """Returns the type of function (e.g. point evaluation or
-        normal component, which is probably handy for clients of FIAT"""
+        normal component, which is probably handy for clients of FIAT."""
         return self.functional_type
 
     def to_riesz(self, poly_set):
-        r"""Constructs an array representation of the functional so
+        """Constructs an array representation of the functional so
         that the functional may be applied to a function expressed in
-        in terms of the expansion set underlying  `poly_set` by means
+        in terms of the expansion set underlying polynomial set by means
         of contracting coefficients.
-
-        That is, `poly_set` will have members all expressed in the
-        form :math:`p = \sum_{i} \alpha^i \phi_i`
-        where :math:`\{\phi_i\}_{i}` is some orthonormal expansion set
-        and :math:`\alpha^i` are coefficients.  Note: the orthonormal
-        expansion set is always scalar-valued but if the members of
-        `poly_set` are vector or tensor valued the :math:`\alpha^i`
-        will be scalars or vectors.
 
         This function constructs a tensor :math:`R` such that the
         contraction of :math:`R` with the array of coefficients
@@ -107,6 +103,17 @@ class Functional(object):
         :math:`R_{ij}` will be :math:`\ell(e^i \phi_j)` where
         :math:`e^i` is the canonical unit vector nonzero only in one
         entry :math:`i`.
+
+        Parameters
+        ----------
+        poly_set : FIAT.polynonials.PolynomialSet
+            The polynomial set. `poly_set` will have members all expressed
+            in the form :math:`p = \sum_{i} \alpha^i \phi_i`
+            where :math:`\{\phi_i\}_{i}` is some orthonormal expansion set
+            and :math:`\alpha^i` are coefficients.  Note: the orthonormal
+            expansion set is always scalar-valued but if the members of
+            `poly_set` are vector or tensor valued the :math:`\alpha^i`
+            will be scalars or vectors.
         """
         es = poly_set.get_expansion_set()
         ed = poly_set.get_embedded_degree()
@@ -152,3 +159,9 @@ class Functional(object):
 
     def tostr(self):
         return self.functional_type
+
+    def __unicode__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return "A " + self.tostr() " functional on a " + self.ref_el.__class__.__name__
