@@ -42,7 +42,7 @@ class Functional(object):
             functional is evaluated.  Each entry in the list is a tuple
             (wt, comp) so that (at least if the deriv_dict argument is empty),
             the functional takes the form
-            :math:`\ell(f) = \sum_{q=1}^{N_q} \sum_{k=1}^{K_q} w^q_k f_{c_k}(x_q)`
+            :math:`\\ell(f) = \\sum_{q=1}^{N_q} \\sum_{k=1}^{K_q} w^q_k f_{c_k}(x_q)`
             where :math:`f_{c_k}` indicates a particular vector or tensor component.
         deriv_dict : dict
             A dictionary that is similar to pt_dict, although the entries of
@@ -95,12 +95,12 @@ class Functional(object):
 
         This function constructs a tensor :math:`R` such that the
         contraction of :math:`R` with the array of coefficients
-        :math:`\alpha` produces the effect of :math:`\ell(f)`
+        :math:`\\alpha` produces the effect of :math:`\\ell(f)`
 
         In the case of scalar-value functions, :math:`R` is just a
         vector of the same length as the expansion set, and
-        :math:`R_i = \ell(\phi_i)`.  For vector-valued spaces,
-        :math:`R_{ij}` will be :math:`\ell(e^i \phi_j)` where
+        :math:`R_i = \\ell(\\phi_i)`.  For vector-valued spaces,
+        :math:`R_{ij}` will be :math:`\\ell(e^i \\phi_j)` where
         :math:`e^i` is the canonical unit vector nonzero only in one
         entry :math:`i`.
 
@@ -108,11 +108,11 @@ class Functional(object):
         ----------
         poly_set : FIAT.polynonials.PolynomialSet
             The polynomial set. `poly_set` will have members all expressed
-            in the form :math:`p = \sum_{i} \alpha^i \phi_i`
-            where :math:`\{\phi_i\}_{i}` is some orthonormal expansion set
-            and :math:`\alpha^i` are coefficients.  Note: the orthonormal
+            in the form :math:`p = \\sum_{i} \\alpha^i \\phi_i`
+            where :math:`\\{\\phi_i\\}_{i}` is some orthonormal expansion set
+            and :math:`\\alpha^i` are coefficients.  Note: the orthonormal
             expansion set is always scalar-valued but if the members of
-            `poly_set` are vector or tensor valued the :math:`\alpha^i`
+            `poly_set` are vector or tensor valued the :math:`\\alpha^i`
             will be scalars or vectors.
         """
         es = poly_set.get_expansion_set()
@@ -164,4 +164,4 @@ class Functional(object):
         return self.__str__()
 
     def __str__(self):
-        return "A " + self.tostr() " functional on a " + self.ref_el.__class__.__name__
+        return self.tostr() + " functional on a " + self.ref_el.__class__.__name__

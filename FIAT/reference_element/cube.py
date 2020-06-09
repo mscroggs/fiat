@@ -24,8 +24,7 @@ from functools import reduce
 from collections import defaultdict
 import operator
 import numpy as np
-from . import TENSORPRODUCT, QUADRILATERAL, HEXAHEDRON
-from .reference_cell import Cell
+from .reference_element import Cell
 from .simplex import UFCInterval, Point, DefaultLine
 
 
@@ -55,7 +54,7 @@ class TensorProductCell(Cell):
             topology[dim] = dict(enumerate(topology[dim][key]
                                            for key in sorted(topology[dim])))
 
-        super().__init__(TENSORPRODUCT, vertices, topology)
+        super().__init__("TENSORPRODUCT", vertices, topology)
         self.cells = tuple(cells)
 
     def _key(self):
@@ -149,7 +148,7 @@ class UFCQuadrilateral(Cell):
         verts = product.get_vertices()
         topology = flatten_entities(pt)
 
-        super().__init__(QUADRILATERAL, verts, topology)
+        super().__init__("QUADRILATERAL", verts, topology)
 
         self.product = product
         self.unflattening_map = compute_unflattening_map(pt)
@@ -212,7 +211,7 @@ class UFCHexahedron(Cell):
         verts = product.get_vertices()
         topology = flatten_entities(pt)
 
-        super().__init__(HEXAHEDRON, verts, topology)
+        super().__init__("HEXAHEDRON", verts, topology)
 
         self.product = product
         self.unflattening_map = compute_unflattening_map(pt)

@@ -19,7 +19,7 @@ import pytest
 
 import FIAT
 from FIAT.reference_element import UFCInterval, UFCTriangle
-from FIAT.finite_element import entity_support_dofs
+from FIAT.abstract_element import entity_support_dofs
 
 
 @pytest.mark.parametrize(('base', 'extr', 'horiz_expected', 'vert_expected'),

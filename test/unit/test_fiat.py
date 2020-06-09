@@ -19,7 +19,7 @@ import random
 import numpy as np
 import pytest
 
-from FIAT.reference_element import LINE, ReferenceElement
+from FIAT.reference_element import ReferenceElement
 from FIAT.reference_element import UFCInterval, UFCTriangle, UFCTetrahedron
 from FIAT import Lagrange
 from FIAT import DiscontinuousLagrange   # noqa: F401
@@ -34,14 +34,14 @@ from FIAT import Nedelec                                # noqa: F401
 from FIAT import NedelecSecondKind          # noqa: F401
 from FIAT import Regge                                    # noqa: F401
 from FIAT import HDivTrace                  # noqa: F401
-from FIAT.elements.hdiv_trace import map_to_reference_facet   # noqa: F401
+from FIAT.finite_elements.hdiv_trace import map_to_reference_facet   # noqa: F401
 from FIAT import HellanHerrmannJohnson  # noqa: F401
 from FIAT import BrezziDouglasFortinMarini  # noqa: F401
 from FIAT import GaussLegendre                   # noqa: F401
 from FIAT import GaussLobattoLegendre    # noqa: F401
 from FIAT import RestrictedElement                   # noqa: F401
 from FIAT import TensorProductElement            # noqa: F401
-from FIAT.elements.tensor_product import FlattenedDimensions             # noqa: F401
+from FIAT.finite_elements.tensor_product import FlattenedDimensions             # noqa: F401
 from FIAT import Hdiv, Hcurl                           # noqa: F401
 from FIAT import Argyris, QuinticArgyris                # noqa: F401
 from FIAT import CubicHermite                           # noqa: F401
@@ -65,7 +65,7 @@ def test_basis_derivatives_scaling():
             edges = {0: (0, 1)}
             topology = {0: {0: (0,), 1: (1,)},
                         1: edges}
-            super(Interval, self).__init__(LINE, verts, topology)
+            super().__init__("LINE", verts, topology)
 
     random.seed(42)
     for i in range(26):

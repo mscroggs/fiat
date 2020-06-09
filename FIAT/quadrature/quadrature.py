@@ -291,18 +291,18 @@ def make_quadrature(ref_el, m):
     msg = "Expecting at least one (not %d) quadrature point per direction" % min_m
     assert (min_m > 0), msg
 
-    if ref_el.get_shape() == reference_element.POINT:
+    if ref_el.get_shape() == "POINT":
         return QuadratureRule(ref_el, [()], [1])
-    elif ref_el.get_shape() == reference_element.LINE:
+    elif ref_el.get_shape() == "LINE":
         return GaussJacobiQuadratureLineRule(ref_el, m)
-    elif ref_el.get_shape() == reference_element.TRIANGLE:
+    elif ref_el.get_shape() == "TRIANGLE":
         return CollapsedQuadratureTriangleRule(ref_el, m)
-    elif ref_el.get_shape() == reference_element.TETRAHEDRON:
+    elif ref_el.get_shape() == "TETRAHEDRON":
         return CollapsedQuadratureTetrahedronRule(ref_el, m)
-    elif ref_el.get_shape() == reference_element.QUADRILATERAL:
+    elif ref_el.get_shape() == "QUADRILATERAL":
         line_rule = GaussJacobiQuadratureLineRule(ref_el.construct_subelement(1), m)
         return make_tensor_product_quadrature(line_rule, line_rule)
-    elif ref_el.get_shape() == reference_element.HEXAHEDRON:
+    elif ref_el.get_shape() == "HEXAHEDRON":
         line_rule = GaussJacobiQuadratureLineRule(ref_el.construct_subelement(1), m)
         return make_tensor_product_quadrature(line_rule, line_rule, line_rule)
     else:

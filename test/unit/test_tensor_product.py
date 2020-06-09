@@ -27,7 +27,7 @@ from FIAT import Lagrange
 from FIAT import DiscontinuousLagrange
 from FIAT import Nedelec
 from FIAT import RaviartThomas
-from FIAT.elements.tensor_product import TensorProductElement, FlattenedDimensions
+from FIAT.finite_elements.tensor_product import TensorProductElement, FlattenedDimensions
 from FIAT import Hdiv, Hcurl
 from FIAT import EnrichedElement
 

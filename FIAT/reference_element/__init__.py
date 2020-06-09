@@ -1,6 +1,4 @@
-from .reference_cell import (POINT, LINE, TRIANGLE, TETRAHEDRON, QUADRILATERAL,
-                             HEXAHEDRON, TENSORPRODUCT)             # noqa: F401
-from .reference_cell import Cell                                    # noqa: F401
+from .reference_element import Cell                                 # noqa: F401
 from .simplex import (Simplex, Point, DefaultLine, DefaultTriangle, DefaultTetrahedron,
                       UFCInterval, UFCTriangle, UFCTetrahedron, ufc_simplex,
                       make_affine_mapping)                          # noqa: F401

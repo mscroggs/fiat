@@ -377,11 +377,11 @@ class TetrahedronExpansionSet(object):
 def get_expansion_set(ref_el):
     """Returns an ExpansionSet instance appopriate for the given
     reference element."""
-    if ref_el.get_shape() == reference_element.LINE:
+    if ref_el.get_shape() == "LINE":
         return LineExpansionSet(ref_el)
-    elif ref_el.get_shape() == reference_element.TRIANGLE:
+    elif ref_el.get_shape() == "TRIANGLE":
         return TriangleExpansionSet(ref_el)
-    elif ref_el.get_shape() == reference_element.TETRAHEDRON:
+    elif ref_el.get_shape() == "TETRAHEDRON":
         return TetrahedronExpansionSet(ref_el)
     else:
         raise Exception("Unknown reference element type.")
@@ -390,11 +390,11 @@ def get_expansion_set(ref_el):
 def polynomial_dimension(ref_el, degree):
     """Returns the dimension of the space of polynomials of degree no
     greater than degree on the reference element."""
-    if ref_el.get_shape() == reference_element.LINE:
+    if ref_el.get_shape() == "LINE":
         return max(0, degree + 1)
-    elif ref_el.get_shape() == reference_element.TRIANGLE:
+    elif ref_el.get_shape() == "TRIANGLE":
         return max((degree + 1) * (degree + 2) // 2, 0)
-    elif ref_el.get_shape() == reference_element.TETRAHEDRON:
+    elif ref_el.get_shape() == "TETRAHEDRON":
         return max(0, (degree + 1) * (degree + 2) * (degree + 3) // 6)
     else:
         raise Exception("Unknown reference element type.")
